@@ -25,16 +25,16 @@ const TextInputExample = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        onChangeText={onChangeText3}
-        value={text3}
+        onChangeText={onChangeText2}
+        value={text2}
         placeholder="Patient Sex"
       />
       <View style={styles.row}>
         <View style={styles.inputWrap}>
           <TextInput
             style={styles.input}
-            onChangeText={onChangeText4}
-            value={text2}
+            onChangeText={onChangeText3}
+            value={text3}
             placeholder="Patient Year"
             keyboardType="numeric"
           />
@@ -43,8 +43,8 @@ const TextInputExample = ({ navigation }) => {
         <View style={styles.inputWrap}>
           <TextInput
             style={styles.input}
-            onChangeText={onChangeText5}
-            value={text2}
+            onChangeText={onChangeText4}
+            value={text4}
             placeholder="Patient Month"
             keyboardType="numeric"
           />
@@ -52,8 +52,8 @@ const TextInputExample = ({ navigation }) => {
         <View style={styles.inputWrap}>
           <TextInput
             style={styles.input}
-            onChangeText={onChangeText2}
-            value={text2}
+            onChangeText={onChangeText5}
+            value={text5}
             placeholder="Patient Day"
             keyboardType="numeric"
           />

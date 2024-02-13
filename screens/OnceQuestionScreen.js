@@ -2,24 +2,27 @@ import React from 'react';
 import {SafeAreaView, StyleSheet, TextInput, Button} from 'react-native';
 
 const TextInputExample = ({navigation}) => {
-  const [text, onChangeText] = React.useState('Hospital City');
-  const [text2, onChangeText2] = React.useState('Hospital Country');
-  const [text3, onChangeText3] = React.useState('Hospital Name');
+  const [text, onChangeText] = React.useState('');
+  const [text2, onChangeText2] = React.useState('');
+  const [text3, onChangeText3] = React.useState('');
 
   return (
     <SafeAreaView>
       <TextInput
         style={styles.input}
+        placeholder='Hospital City'
         onChangeText={onChangeText}
         value={text}
       />
       <TextInput
         style={styles.input}
+        placeholder='Hospital Country'
         onChangeText={onChangeText2}
         value={text2}
       />
       <TextInput
         style={styles.input}
+        placeholder='Hospital Name'
         onChangeText={onChangeText3}
         value={text3}
       />

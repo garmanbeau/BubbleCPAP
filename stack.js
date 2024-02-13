@@ -8,6 +8,7 @@ import YearlyQuestion from './screens/YearlyQuestionScreen.js';
 import PatientPage1 from './screens/PatientPage1.js';
 import PatientPage2 from './screens/PatientPage2.js';
 import PatientPage3 from './screens/PatientPage3.js';
+import ResultPage from './screens/ResultScreen.js';
 //import GoodScreen from './GoodScreen';
 
 const Stack = createNativeStackNavigator();
@@ -26,6 +27,8 @@ export default function App() {
         <Stack.Screen name="PatientPage1" component={PatientPage1}/>  
         <Stack.Screen name="PatientPage2" component={PatientPage2}/>  
         <Stack.Screen name="PatientPage3" component={PatientPage3}/>  
+        <Stack.Screen name="Results" component={ResultPage}/>  
+
         
         </Stack.Navigator>
     </NavigationContainer>
