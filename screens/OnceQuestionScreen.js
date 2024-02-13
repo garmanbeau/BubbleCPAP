@@ -24,7 +24,7 @@ const TextInputExample = ({navigation}) => {
         value={text3}
       />
       <Button title="Next"
-        onPress={() => navigation.navigate("PatientPage1")}/>
+        onPress={() => navigation.navigate("Yearly Questions")}/>
     </SafeAreaView>
   );
 };
