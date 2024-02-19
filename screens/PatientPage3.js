@@ -17,27 +17,28 @@ const TextInputExample = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Patient interface (nasal, full face, seal)"
+        placeholder="Patient interface (nasal, full face, seal)" //patient interface - nasal prongs, nasal mask, nose/mouth mask, scuba/full face mask
         onChangeText={onChangeText11}
         value={text11}
       />
       <TextInput
         style={styles.input}
-        placeholder="Outcome"
+        placeholder="Outcome" //discharged home, trasnfered to another hospital, died, intubated (check all that apply, as a child can be both intubated and transferred or intubated and died)
         onChangeText={onChangeText12}
         value={text12}
       />
       <TextInput
         style={styles.input}
         placeholder="Complications associated with Bubble CPAP "
+        //discharged home, trasnfered to another hospital, died, intubated (check all that apply, as a child can be both intubated and transferred or intubated and died)
+        //If other - please describe
+        //if pneumothorax, can you describe the context (patient severity of illness and how it was diagnosed) - free text
+
         onChangeText={onChangeText13}
         value={text13}
       />
 
-      <Button
-        title="Next"
-        onPress={() => navigation.navigate("Welcome")}
-      />
+      <Button title="Next" onPress={() => navigation.navigate("Welcome")} />
     </SafeAreaView>
   );
 };

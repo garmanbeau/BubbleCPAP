@@ -24,7 +24,7 @@ const TextInputExample = ({ navigation }) => {
         placeholder="Diagnosis"
       />
       <TextInput
-        style={styles.input}
+        style={styles.input} // change to Assigned sex at birth - male, female, other
         onChangeText={onChangeText2}
         value={text2}
         placeholder="Patient Sex"

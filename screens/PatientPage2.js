@@ -26,7 +26,7 @@ const TextInputExample = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Bubble CPAP expiratory limb size (measured in millimeters or centimeters)"
+        placeholder="Bubble CPAP expiratory limb size (measured in millimeters or centimeters)" //( do we want to put tubing types instead? - standard oxygen tubing, corrugated tubing, or other?) 
         onChangeText={onChangeText2}
         value={text2}
       />
@@ -44,17 +44,23 @@ const TextInputExample = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Duration of Bubble CPAP use (hours, days)"
+        placeholder="Duration of Bubble CPAP use (hours, days)" 
+        /* consider For how long used - wonder if we put some parameters or if we want the actual number of days?
+        <1 day
+        1-3days
+        3-7days
+        >7days
+        */
         onChangeText={onChangeText5}
         value={text5}
       />
-      <TextInput
+      <TextInput //(buttons would be the numbers 1 thorugh 10, and other/free text)
         style={styles.input}
         placeholder="Lowest Bubble CPAP pressure used"
         onChangeText={onChangeText6}
         value={text6}
       />
-      <TextInput
+      <TextInput //(buttons would be the numbers 1 thorugh 10, and other/free text)
         style={styles.input}
         placeholder="Highest Bubble CPAP pressure used"
         onChangeText={onChangeText7}
@@ -62,7 +68,7 @@ const TextInputExample = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Source of oxygen"
+        placeholder="Source of oxygen" //primary source of oxygen - tank/cylinder, wall, oxygen concentrator, other
         onChangeText={onChangeText8}
         value={text8}
       />

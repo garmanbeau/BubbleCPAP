@@ -15,28 +15,30 @@ const YearlyQuestion = ({navigation}) => {
         { label: 'NeoNatal', value: '2' },
         { label: 'Cardiac ICU', value: '3' },
       ];
-
+      /*hosp units where BCPAP is used: Which hosp areas bCPAP is used in - PICU, NICU, CICU, 
+      emergency department, inpatient pediatric ward, inpatient general ward (adults and kids), 
+      inpatient general ICU (adults and kids). Acute care unit (ACU), emergency pediatric unit (EPU) */
   return (
     <SafeAreaView>
       <TextInput
         style={styles.input}
-        placeholder='# of bCPAP Units available at hostpital'
+        placeholder='# of bCPAP Units available at hostpital' //make numeric
         onChangeText={onChangeText}
         value={numOfUnitsAtHostpital}
       />
       <TextInput
         style={styles.input}
-        placeholder='# of pediatric admissions for respitory illnesses per month'
+        placeholder='# of pediatric admissions for respitory illnesses per month' //add approximate to questions and make numeric 
         onChangeText={onChangeText2}
         value={numOfPedAdPerMonth}
       />
       <TextInput
         style={styles.input}
-        placeholder='# of pediatric admissions requireing bCPAP per month'
+        placeholder='# of pediatric admissions requireing bCPAP per month' //change to How many children placed on bCPAP per month  (approximate)- number only
         onChangeText={onChangeText3}
         value={numOfPedAdReqBCPAPPerMonth}
       />
-      <Dropdown
+      <Dropdown //make multi select drop down??
         style={[styles.input, isFocus && { borderColor: 'blue' }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
@@ -59,10 +61,15 @@ const YearlyQuestion = ({navigation}) => {
         />
 <TextInput
         style={styles.input}
-        placeholder='# of respiratory specialists available'
+        placeholder='# of respiratory specialists available' // make numeric
         onChangeText={onChangeText3}
         value={numOfPedAdReqBCPAPPerMonth}
       />
+
+      {/* 
+        Add Usual nurse to patient ratio when on BCPAP - 1:1, 1:2, 1:3: 1:4, 1:5, >1:
+      */}
+
       <Button title="Next"
         onPress={() => navigation.navigate("PatientPage1")}/>
     </SafeAreaView>
