@@ -1,7 +1,10 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Button, Text, View } from "react-native";
+import { StyleSheet, Button, Text, View, TextInput, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
 
 export default function WelcomeScreen({ navigation }) {
+  const [isTextInputVisible, setTextInputVisibility] = useState(false);
+
   return (
     <View style={styles.container}>
       <Text>Welcome to the BcPAP App!</Text>
@@ -15,12 +18,14 @@ export default function WelcomeScreen({ navigation }) {
         title="Record Information"
         onPress={() => navigation.navigate("HospitalSelect")}
       />
-
-      <StatusBar style="auto" />
-    </View>
+<Button
+        title="Toggle TextInput"
+        onPress={() => setTextInputVisibility(!isTextInputVisible)}
+      />
+      {isTextInputVisible && <TextInput placeholder="Type here..." />}
+      </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
