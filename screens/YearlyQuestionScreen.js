@@ -17,15 +17,15 @@ const YearlyQuestion = ({navigation}) => {
 
     const [isChecked, setChecked] = useState(false);
     const [items, setItems] = useState([
-        { label: 'Pediatric Intensive Care Unit (PICU)', value: '1' },
-        { label: 'NeoNatal Intesive Care Unit (NICU)', value: '2' },
-        { label: 'Cardiac Intesive Care Unit (CICU)', value: '3' },
-        { label: 'Emergency Department', value: '4' },
-        { label: 'Inpatient Pediatric Ward', value: '5' },
-        { label: 'Inpatient General Ward (adults and kids)', value: '6' },
-        { label: 'Inpatient General ICU (adults and kids)', value: '7' },
-        { label: 'Acute Care Unit (ACU)', value: '8' },
-        { label: 'Emergency Pediatric Unit (EPU)', value: '9' },
+        { label: 'Pediatric Intensive Care Unit (PICU)', value: false },
+        { label: 'NeoNatal Intesive Care Unit (NICU)', value: false },
+        { label: 'Cardiac Intesive Care Unit (CICU)', value: false },
+        { label: 'Emergency Department', value: false },
+        { label: 'Inpatient Pediatric Ward', value: false },
+        { label: 'Inpatient General Ward (adults and kids)', value: false },
+        { label: 'Inpatient General ICU (adults and kids)', value: false },
+        { label: 'Acute Care Unit (ACU)', value: false },
+        { label: 'Emergency Pediatric Unit (EPU)', value: false },
       ]);
 
     const nurseToPatientData = [
@@ -34,7 +34,7 @@ const YearlyQuestion = ({navigation}) => {
         {label: '1:3', value: '3'}, 
         {label: '1:4', value: '4'}, 
         {label: '1:5', value: '5'}, 
-        {label: '>1:1', value: '6'}, 
+        {label: '>1:5', value: '6'}, 
     ];
 
     const renderBouncyCheckboxes = () => {
@@ -43,7 +43,7 @@ const YearlyQuestion = ({navigation}) => {
           <BouncyCheckbox
             key={index}
             text={item.label}
-            isChecked={false}
+            isChecked={item.value}
             textStyle={{ textDecorationLine: 'none' }}
             onPress={(isChecked) => {
               // Update the value of the item in the array
