@@ -1,5 +1,11 @@
-import React, {useState} from "react";
-import { SafeAreaView, StyleSheet, TextInput, Button, Text } from "react-native";
+import React, { useState } from "react";
+import {
+  SafeAreaView,
+  StyleSheet,
+  TextInput,
+  Button,
+  Text,
+} from "react-native";
 import Slider from "@react-native-community/slider";
 import { Dropdown } from "react-native-element-dropdown";
 const TextInputExample = ({ navigation }) => {
@@ -18,27 +24,27 @@ const TextInputExample = ({ navigation }) => {
   const [text13, onChangeText13] = React.useState("");
 
   const [minPressureValue, setMinPressureValue] = useState(null);
-const [maxPressureValue, setMaxPressureValue] = useState(null);
-  const [oxygenSource, setOxygenSource] =useState('');
+  const [maxPressureValue, setMaxPressureValue] = useState(null);
+  const [oxygenSource, setOxygenSource] = useState("");
   const [isFocus, setIsFocus] = useState(false); //TODO: define different isfocus vars
-const [bcpapUseLength, setBcpapUseLength] = useState(null);
-const data = [
-  {label: "Tank/Cylinder", value: "Tank/Cylinder"},
-  {label: "Wall", value: "Wall"},
-  {label: "Oxygen Concentrator", value: "Oxygen Concentrator"},
-  {label: "Other", value: "Other"},
-];
+  const [bcpapUseLength, setBcpapUseLength] = useState(null);
+  const data = [
+    { label: "Tank/Cylinder", value: "Tank/Cylinder" },
+    { label: "Wall", value: "Wall" },
+    { label: "Oxygen Concentrator", value: "Oxygen Concentrator" },
+    { label: "Other", value: "Other" },
+  ];
 
-const dayData = [
-  {label: "<1 day", value: "<1 day"}, 
-  {label: "1-3 days", value: "1-3 days"}, 
-  {label: "3-7 days", value: "3-7 days"}, 
-  {label: ">7 days", value: ">7 days"}, 
-]; 
-// <1 day
-//         1-3days
-//         3-7days
-//         >7days
+  const dayData = [
+    { label: "<1 day", value: "<1 day" },
+    { label: "1-3 days", value: "1-3 days" },
+    { label: "3-7 days", value: "3-7 days" },
+    { label: ">7 days", value: ">7 days" },
+  ];
+  // <1 day
+  //         1-3days
+  //         3-7days
+  //         >7days
   return (
     <SafeAreaView>
       <TextInput
@@ -65,12 +71,12 @@ const dayData = [
         onChangeText={onChangeText4}
         value={text4}
       />
-        { /* consider For how long used - wonder if we put some parameters or if we want the actual number of days?
+      {/* consider For how long used - wonder if we put some parameters or if we want the actual number of days?
         <1 day
         1-3days
         3-7days
         >7days
-        */ }
+        */}
       {/* <TextInput
         style={styles.input}
         placeholder="Duration of Bubble CPAP use (hours, days)"
@@ -78,8 +84,8 @@ const dayData = [
         value={text5}
       /> */}
 
-<Dropdown
-        style={[styles.input, isFocus && { borderColor: 'blue' }]}
+      <Dropdown
+        style={[styles.input, isFocus && { borderColor: "blue" }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -88,17 +94,17 @@ const dayData = [
         maxHeight={300}
         labelField="label"
         valueField="value"
-        placeholder={!isFocus ? 'Duration of Bubble CPAP use' : '...'}
+        placeholder={!isFocus ? "Duration of Bubble CPAP use" : "..."}
         searchPlaceholder="Search..."
         value={bcpapUseLength}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
-        onChange={item => {
+        onChange={(item) => {
           setBcpapUseLength(item.value);
           console.log(item.value);
           setIsFocus(false);
         }}
-        />
+      />
 
       {/* <TextInput //(buttons would be the numbers 1 thorugh 10, and other/free text)
         style={styles.input}
@@ -117,14 +123,14 @@ const dayData = [
         minimumTrackTintColor="#FFFFFF"
         maximumTrackTintColor="#000000"
       />
-        <Text>Minimum Pressure: {minPressureValue}</Text>
+      <Text>Minimum Pressure: {minPressureValue}</Text>
       {/* <TextInput //(buttons would be the numbers 1 thorugh 10, and other/free text)
         style={styles.input}
         placeholder="Highest Bubble CPAP pressure used"
         onChangeText={onChangeText7}
         value={text7}
       /> */}
-<Slider
+      <Slider
         style={{ width: 200, height: 40 }}
         minimumValue={0}
         maximumValue={10}
@@ -135,8 +141,8 @@ const dayData = [
         minimumTrackTintColor="#FFFFFF"
         maximumTrackTintColor="#000000"
       />
-        <Text>Maximum Pressure: {maxPressureValue}</Text>
-      
+      <Text>Maximum Pressure: {maxPressureValue}</Text>
+
       {/* <TextInput
         style={styles.input}
         placeholder="Source of oxygen" //primary source of oxygen - tank/cylinder, wall, oxygen concentrator, other
@@ -144,8 +150,8 @@ const dayData = [
         value={text8}
       /> */}
 
-<Dropdown
-        style={[styles.input, isFocus && { borderColor: 'blue' }]}
+      <Dropdown
+        style={[styles.input, isFocus && { borderColor: "blue" }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -154,18 +160,18 @@ const dayData = [
         maxHeight={300}
         labelField="label"
         valueField="value"
-        placeholder={!isFocus ? 'Primary Source of Oxygen' : '...'}
+        placeholder={!isFocus ? "Primary Source of Oxygen" : "..."}
         searchPlaceholder="Search..."
         value={oxygenSource}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
-        onChange={item => {
+        onChange={(item) => {
           setOxygenSource(item.value);
           console.log(item.value);
           setIsFocus(false);
         }}
-        />
-        {oxygenSource.includes('Other') && (
+      />
+      {oxygenSource.includes("Other") && (
         // Render a textinput element if the condition is true
         <TextInput placeholder="Please specify" />
       )}
