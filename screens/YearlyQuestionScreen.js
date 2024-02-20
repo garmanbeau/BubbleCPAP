@@ -1,8 +1,9 @@
-import React, { useState }from 'react';
+import React, { useState, useEffect }from 'react';
 import {Text, View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity} from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-
+import * as Font from 'expo-font';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 
 const YearlyQuestion = ({navigation}) => {
@@ -57,10 +58,28 @@ const YearlyQuestion = ({navigation}) => {
     const hospitalsWhereBCPAPAreUsedView = () =>{
       return(
       <View>
-        <Text>Do you agree to the terms and conditions?</Text>
+        <Text>Please select all areas where BCPAP is used in your hospital?</Text>
         <View>{renderBouncyCheckboxes()}</View>
       </View>)
     };
+
+    // Declare a state variable to track the font loading status
+ const [isFontLoaded, setFontLoaded] = useState(false);
+
+ // Use the useEffect hook to load the font
+ useEffect(() => {
+  // Define an async function to load the font
+  const loadFont = async () => {
+    // Use the Font.loadAsync method and pass the font name and the font file path as an object
+    await Font.loadAsync({
+      'Font Awesome 5 Free': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf'),
+    });
+    // Update the state variable to true when the font is loaded
+    setFontLoaded(true);
+  };
+  // Call the loadFont function
+  loadFont();
+}, []);
       /*hosp units where BCPAP is used: Which hosp areas bCPAP is used in - PICU, NICU, CICU, 
       emergency department, inpatient pediatric ward, inpatient general ward (adults and kids), 
       inpatient general ICU (adults and kids). Acute care unit (ACU), emergency pediatric unit (EPU) */
@@ -88,7 +107,14 @@ const YearlyQuestion = ({navigation}) => {
         keyboardType="numeric"
       />
      <TouchableOpacity onPress={() => setTextInputVisibility(!isTextInputVisible)}>
-      <Text> Units that use BCPAP \/</Text>
+      <Text style={styles.headerText}> Units that use BCPAP {' '}
+          {isTextInputVisible ? (
+            // Use a right arrow icon from Font Awesome
+            <FontAwesome5 name="angle-down" size={24} color="black" />
+          ) : (
+            // Use a down arrow icon from Font Awesome
+            <FontAwesome5 name="angle-right" size={24} color="black" />
+          )}</Text>
      </TouchableOpacity>
      {isTextInputVisible && <View>{hospitalsWhereBCPAPAreUsedView()}</View>}
       
@@ -196,6 +222,25 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  headerText: {
+    // Set the font size to 18
+    fontSize: 18,
+    // Set the font weight to bold
+    fontWeight: 'bold',
+    // Set the color to gray
+    color: 'gray',
+    // Add a bottom border with a gray line
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+  },
+  arrowIcon: {
+    // Set the font family to Font Awesome
+    fontFamily: 'Font Awesome 5 Free',
+    // Set the font weight to solid
+    fontWeight: '900',
+    // Set the color to gray
+    color: 'gray',
   },
 });
 

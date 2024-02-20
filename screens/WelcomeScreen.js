@@ -3,7 +3,6 @@ import { StyleSheet, Button, Text, View, TextInput, TouchableOpacity } from "rea
 import React, { useState } from "react";
 
 export default function WelcomeScreen({ navigation }) {
-  const [isTextInputVisible, setTextInputVisibility] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -18,11 +17,6 @@ export default function WelcomeScreen({ navigation }) {
         title="Record Information"
         onPress={() => navigation.navigate("HospitalSelect")}
       />
-<Button
-        title="Toggle TextInput"
-        onPress={() => setTextInputVisibility(!isTextInputVisible)}
-      />
-      {isTextInputVisible && <TextInput placeholder="Type here..." />}
       </View>
   );
 }

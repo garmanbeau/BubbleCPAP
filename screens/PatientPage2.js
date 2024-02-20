@@ -17,7 +17,6 @@ const TextInputExample = ({ navigation }) => {
   const [text6, onChangeText6] = React.useState("");
   const [text7, onChangeText7] = React.useState("");
   const [text8, onChangeText8] = React.useState("");
-  const [text9, onChangeText9] = React.useState("");
   const [text10, onChangeText10] = React.useState("");
   const [text11, onChangeText11] = React.useState("");
   const [text12, onChangeText12] = React.useState("");
@@ -28,6 +27,8 @@ const TextInputExample = ({ navigation }) => {
   const [oxygenSource, setOxygenSource] = useState("");
   const [isFocus, setIsFocus] = useState(false); //TODO: define different isfocus vars
   const [bcpapUseLength, setBcpapUseLength] = useState(null);
+  const [bcpapDeviceType, setBcpapDeviceType] = useState(null);
+
   const data = [
     { label: "Tank/Cylinder", value: "Tank/Cylinder" },
     { label: "Wall", value: "Wall" },
@@ -40,6 +41,13 @@ const TextInputExample = ({ navigation }) => {
     { label: "1-3 days", value: "1-3 days" },
     { label: "3-7 days", value: "3-7 days" },
     { label: ">7 days", value: ">7 days" },
+  ];
+//industry/commerical, homemade/who-style/ constructed, other, unknown
+  const deviceData = [
+    {label: "industry/commerical", value:"industry/commerical"},
+    {label: "homemade/who-style/ constructed", value:"homemade/who-style/ constructed"},
+    {label: "other", value:"other"},
+    {label: "unknown", value:"unknown"},
   ];
   // <1 day
   //         1-3days
@@ -58,6 +66,27 @@ const TextInputExample = ({ navigation }) => {
         placeholder="Bubble CPAP expiratory limb size (measured in millimeters or centimeters)" //( do we want to put tubing types instead? - standard oxygen tubing, corrugated tubing, or other?)
         onChangeText={onChangeText2}
         value={text2}
+      />
+      <Dropdown
+        style={[styles.input, isFocus && { borderColor: "blue" }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={deviceData}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? "BCPAP device used" : "..."}
+        searchPlaceholder="Search..."
+        value={bcpapUseLength}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setBcpapUseLength(item.value);
+          console.log(item.value);
+          setIsFocus(false);
+        }}
       />
       <TextInput
         style={styles.input}
@@ -96,11 +125,11 @@ const TextInputExample = ({ navigation }) => {
         valueField="value"
         placeholder={!isFocus ? "Duration of Bubble CPAP use" : "..."}
         searchPlaceholder="Search..."
-        value={bcpapUseLength}
+        value={bcpapDeviceType}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setBcpapUseLength(item.value);
+          setBcpapDeviceType(item.value);
           console.log(item.value);
           setIsFocus(false);
         }}
@@ -175,12 +204,7 @@ const TextInputExample = ({ navigation }) => {
         // Render a textinput element if the condition is true
         <TextInput placeholder="Please specify" />
       )}
-      <TextInput
-        style={styles.input}
-        placeholder="Method of oxygen blending"
-        onChangeText={onChangeText9}
-        value={text9}
-      />
+      
 
       <Button
         title="Next"

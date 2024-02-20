@@ -1,8 +1,12 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity, Text } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import * as Font from 'expo-font';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const TextInputExample = ({ navigation }) => {
+  const [text9, onChangeText9] = React.useState("");
+
   const [text10, onChangeText10] = React.useState("");
   const [text11, onChangeText11] = React.useState("");
   const [text12, onChangeText12] = React.useState("");
@@ -11,18 +15,29 @@ const TextInputExample = ({ navigation }) => {
   const [isTextInputVisible2, setTextInputVisibility2] = useState(false);
   const [ isPneumothorax, setPneumothorax] = useState(false);
 
-  const [items, setItems] = useState([
-    { label: 'nasal prongs', value: '1' },
-    { label: 'nasal mask', value: '2' },
-    { label: 'nose/mouth mask', value: '3' },
-    { label: 'scuba/full face mask', value: '4' },
-  ]);
+ // Declare a state variable to track the font loading status
+ const [isFontLoaded, setFontLoaded] = useState(false);
+
+ // Use the useEffect hook to load the font
+ useEffect(() => {
+  // Define an async function to load the font
+  const loadFont = async () => {
+    // Use the Font.loadAsync method and pass the font name and the font file path as an object
+    await Font.loadAsync({
+      'Font Awesome 5 Free': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf'),
+    });
+    // Update the state variable to true when the font is loaded
+    setFontLoaded(true);
+  };
+  // Call the loadFont function
+  loadFont();
+}, []);
   
     const [outcomeItems, setOutcomeItems] = useState([
-      {label: 'Discharged Home', value: '1'},
-      {label: 'Transfered to Another Hospital', value: '2'},
-      {label: 'Died', value: '3'},
-      {label: 'Intubated', value: '4'},
+      {label: 'Discharged Home', value: false},
+      {label: 'Transfered to Another Hospital', value: false},
+      {label: 'Died', value: false},
+      {label: 'Intubated', value: false},
     ]);
 
     const [complicationItems, setComplicationItems] = useState([
@@ -41,7 +56,7 @@ const TextInputExample = ({ navigation }) => {
         <BouncyCheckbox
           key={index}
           text={item.label}
-          isChecked={false}
+          isChecked={item.value}
           textStyle={{ textDecorationLine: 'none' }}
           onPress={(isChecked) => {
             // Update the value of the item in the array
@@ -84,7 +99,14 @@ const TextInputExample = ({ navigation }) => {
         )
       }
   return (
+    isFontLoaded ? (
     <SafeAreaView>
+      <TextInput
+        style={styles.input}
+        placeholder="Method of oxygen blending"
+        onChangeText={onChangeText9}
+        value={text9}
+      />
       <TextInput
         style={styles.input}
         placeholder="Method of humidification"
@@ -107,7 +129,14 @@ const TextInputExample = ({ navigation }) => {
       /> */}
 
       <TouchableOpacity onPress={() => setTextInputVisibility(!isTextInputVisible)}>
-      <Text> Patient Outcomes \/</Text>
+      <Text style ={styles.headerText}> Patient Outcomes {' '}
+          {isTextInputVisible ? (
+            // Use a right arrow icon from Font Awesome
+            <FontAwesome5 name="angle-down" size={24} color="black" />
+          ) : (
+            // Use a down arrow icon from Font Awesome
+            <FontAwesome5 name="angle-right" size={24} color="black" />
+          )}</Text>
      </TouchableOpacity>
 
         {isTextInputVisible && <View>{patientOutcomeView()}</View>}
@@ -123,7 +152,14 @@ const TextInputExample = ({ navigation }) => {
       /> */}
 
 <TouchableOpacity onPress={() => setTextInputVisibility2(!isTextInputVisible2)}>
-      <Text> Did complications arise</Text>
+      <Text style={styles.headerText}> Did complications arise {' '}
+      {isTextInputVisible2 ? (
+            // Use a right arrow icon from Font Awesome
+            <FontAwesome5 name="angle-down" size={24} color="black" />
+          ) : (
+            // Use a down arrow icon from Font Awesome
+            <FontAwesome5 name="angle-right" size={24} color="black" />
+          )}</Text>
      </TouchableOpacity>
      {isTextInputVisible2 && <View>{complicationView()}</View>}
 
@@ -140,7 +176,7 @@ const TextInputExample = ({ navigation }) => {
         <TextInput placeholder="Please Describe Patient Severity of illness and hot it was diagnosed." />
       )}
       <Button title="Next" onPress={() => navigation.navigate("Welcome")} />
-    </SafeAreaView>
+    </SafeAreaView>) : <Text>Loading...</Text>
   );
 };
 
@@ -150,6 +186,25 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+  },
+  headerText: {
+    // Set the font size to 18
+    fontSize: 18,
+    // Set the font weight to bold
+    fontWeight: 'bold',
+    // Set the color to gray
+    color: 'gray',
+    // Add a bottom border with a gray line
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+  },
+  arrowIcon: {
+    // Set the font family to Font Awesome
+    fontFamily: 'Font Awesome 5 Free',
+    // Set the font weight to solid
+    fontWeight: '900',
+    // Set the color to gray
+    color: 'gray',
   },
 });
 
