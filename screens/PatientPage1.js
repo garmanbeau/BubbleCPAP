@@ -7,6 +7,7 @@ import {
   Button,
 } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
+import styles from '../shared/styles';
 
 
 const TextInputExample = ({ navigation }) => {
@@ -105,27 +106,5 @@ const TextInputExample = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-  inputWrap: {
-    flex: 1,
-    borderColor: "#cccccc",
-    borderBottomWidth: 1,
-    marginBottom: 10,
-  },
-  row: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  submitButton: {
-    bottom: -300,
-  },
-});
 
 export default TextInputExample;

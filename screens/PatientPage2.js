@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import Slider from "@react-native-community/slider";
 import { Dropdown } from "react-native-element-dropdown";
+import styles from '../shared/styles';
+
 const TextInputExample = ({ navigation }) => {
   const [text, onChangeText] = React.useState("");
   const [text2, onChangeText2] = React.useState("");
@@ -213,14 +215,5 @@ const TextInputExample = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
 
 export default TextInputExample;

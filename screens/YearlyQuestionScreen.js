@@ -4,7 +4,9 @@ import { Dropdown } from 'react-native-element-dropdown';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Font from 'expo-font';
 import { FontAwesome5 } from '@expo/vector-icons';
-
+import styles from '../shared/styles';
+import axios from 'axios';
+import { fetchData } from '../shared/api';
 
 const YearlyQuestion = ({navigation}) => {
   const [isTextInputVisible, setTextInputVisibility] = useState(false);
@@ -16,6 +18,8 @@ const YearlyQuestion = ({navigation}) => {
     const [isFocus, setIsFocus] = useState(false);
 
     const [isChecked, setChecked] = useState(false);
+    const [itemz, setItemz] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [items, setItems] = useState([
         { label: 'Pediatric Intensive Care Unit (PICU)', value: false },
         { label: 'NeoNatal Intesive Care Unit (NICU)', value: false },
@@ -62,6 +66,20 @@ const YearlyQuestion = ({navigation}) => {
         <View>{renderBouncyCheckboxes()}</View>
       </View>)
     };
+    function getAreas(){
+      axios.get('http://192.168.1.128:3000/api/hosp-areas')
+      .then((response) => {
+        // Transform the response data into the format { label: '...', value: false }
+        const hospAreas = response.data.map(area => ({ label: area.name, value: false }));
+        setItemz(hospAreas);
+        setIsLoading(false);
+        console.log(itemz);
+      })
+      .catch(error => {
+        console.error('Error fetching hosp areas', error);
+      });
+
+    }
 
     // Declare a state variable to track the font loading status
  const [isFontLoaded, setFontLoaded] = useState(false);
@@ -77,9 +95,17 @@ const YearlyQuestion = ({navigation}) => {
     // Update the state variable to true when the font is loaded
     setFontLoaded(true);
   };
+ 
   // Call the loadFont function
   loadFont();
+  // getAreas();
+fetchData(setItemz, setIsLoading);
+
 }, []);
+
+if (isLoading) {
+  return <Text>Loading </Text>; // Or some other placeholder
+}
       /*hosp units where BCPAP is used: Which hosp areas bCPAP is used in - PICU, NICU, CICU, 
       emergency department, inpatient pediatric ward, inpatient general ward (adults and kids), 
       inpatient general ICU (adults and kids). Acute care unit (ACU), emergency pediatric unit (EPU) */
@@ -178,70 +204,5 @@ const YearlyQuestion = ({navigation}) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-  container: {
-    backgroundColor: 'white',
-    padding: 16,
-  },
-  dropdown: {
-    height: 50,
-    borderColor: 'gray',
-    borderWidth: 0.5,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-  },
-  icon: {
-    marginRight: 5,
-  },
-  label: {
-    position: 'absolute',
-    backgroundColor: 'white',
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
-  },
-  placeholderStyle: {
-    fontSize: 16,
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-  },
-  headerText: {
-    // Set the font size to 18
-    fontSize: 18,
-    // Set the font weight to bold
-    fontWeight: 'bold',
-    // Set the color to gray
-    color: 'gray',
-    // Add a bottom border with a gray line
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
-  },
-  arrowIcon: {
-    // Set the font family to Font Awesome
-    fontFamily: 'Font Awesome 5 Free',
-    // Set the font weight to solid
-    fontWeight: '900',
-    // Set the color to gray
-    color: 'gray',
-  },
-});
 
 export default YearlyQuestion;

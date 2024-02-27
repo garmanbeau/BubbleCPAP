@@ -1,5 +1,7 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, TextInput, Button} from 'react-native';
+import {SafeAreaView, TextInput, Button} from 'react-native';
+import styles from '../shared/styles';
+
 
 const TextInputExample = ({navigation}) => {
   const [text, onChangeText] = React.useState('');
@@ -32,13 +34,6 @@ const TextInputExample = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
+
 
 export default TextInputExample;

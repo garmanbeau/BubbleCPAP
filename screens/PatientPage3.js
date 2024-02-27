@@ -3,6 +3,8 @@ import { View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity, Te
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Font from 'expo-font';
 import { FontAwesome5 } from '@expo/vector-icons';
+import styles from '../shared/styles';
+
 
 const TextInputExample = ({ navigation }) => {
   const [text9, onChangeText9] = React.useState("");
@@ -179,33 +181,5 @@ const TextInputExample = ({ navigation }) => {
     </SafeAreaView>) : <Text>Loading...</Text>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-  headerText: {
-    // Set the font size to 18
-    fontSize: 18,
-    // Set the font weight to bold
-    fontWeight: 'bold',
-    // Set the color to gray
-    color: 'gray',
-    // Add a bottom border with a gray line
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
-  },
-  arrowIcon: {
-    // Set the font family to Font Awesome
-    fontFamily: 'Font Awesome 5 Free',
-    // Set the font weight to solid
-    fontWeight: '900',
-    // Set the color to gray
-    color: 'gray',
-  },
-});
 
 export default TextInputExample;

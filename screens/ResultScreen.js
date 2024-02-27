@@ -1,9 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, useWindowDimensions, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
+import styles from '../shared/styles';
+
 export default function ResultsScreen({navigation}) {
   return (
-    <View style={styles.container}>
+    <View style={styles.container2}>
       <Text>Results for total bCPAP Patients for hospital</Text>
       <StatusBar style="auto" />
       <LineChart
@@ -52,12 +54,3 @@ export default function ResultsScreen({navigation}) {
     
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
