@@ -5,8 +5,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Font from 'expo-font';
 import { FontAwesome5 } from '@expo/vector-icons';
 import styles from '../shared/styles';
-import axios from 'axios';
-import { fetchData } from '../shared/api';
+import { fetchNursePatientRatios, fetchHospitalAreas } from '../shared/api';
 
 const YearlyQuestion = ({navigation}) => {
   const [isTextInputVisible, setTextInputVisibility] = useState(false);
@@ -14,13 +13,17 @@ const YearlyQuestion = ({navigation}) => {
     const [numOfUnitsAtHostpital, onChangeText] = React.useState('');
     const [numOfPedAdPerMonth, onChangeText2] = React.useState('');
     const [numOfPedAdReqBCPAPPerMonth, onChangeText3] = React.useState('');
-    const [value, setValue] = useState(null);
-    const [isFocus, setIsFocus] = useState(false);
 
-    const [isChecked, setChecked] = useState(false);
-    const [itemz, setItemz] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [items, setItems] = useState([
+    const [isFocus, setIsFocus] = useState(false);
+    
+    const [hospitals, setHospitals] = useState([]);
+    const [nursePatientRatio, setNursePatientRatio] = useState([]);
+    const [selecedRatio, setSelectedRatio] = useState(null); //needed to store nurse drop down value
+    
+    const [isHospitalsLoading, setIsHospitalsLoading] = useState(true);
+    const [isRatiosLoading, setIsRatiosLoading] = useState(true);
+
+    const [itemz, setItemz] = useState([
         { label: 'Pediatric Intensive Care Unit (PICU)', value: false },
         { label: 'NeoNatal Intesive Care Unit (NICU)', value: false },
         { label: 'Cardiac Intesive Care Unit (CICU)', value: false },
@@ -32,17 +35,17 @@ const YearlyQuestion = ({navigation}) => {
         { label: 'Emergency Pediatric Unit (EPU)', value: false },
       ]);
 
-    const nurseToPatientData = [
-        {label: '1:1', value: '1'}, 
-        {label: '1:2', value: '2'}, 
-        {label: '1:3', value: '3'}, 
-        {label: '1:4', value: '4'}, 
-        {label: '1:5', value: '5'}, 
-        {label: '>1:5', value: '6'}, 
-    ];
+    // const nurseToPatientData = [
+    //     {label: '1:1', value: '1:1'}, 
+    //     {label: '1:2', value: '1:2'}, 
+    //     {label: '1:3', value: '1:3'}, 
+    //     {label: '1:4', value: '1:4'}, 
+    //     {label: '1:5', value: '1:5'}, 
+    //     {label: '>1:5', value: '>1:5'}, 
+    // ];
 
     const renderBouncyCheckboxes = () => {
-      return items.map((item, index) => {
+      return hospitals.map((item, index) => {
         return (
           <BouncyCheckbox
             key={index}
@@ -51,9 +54,9 @@ const YearlyQuestion = ({navigation}) => {
             textStyle={{ textDecorationLine: 'none' }}
             onPress={(isChecked) => {
               // Update the value of the item in the array
-              const newItems = [...items];
+              const newItems = [...hospitals];
               newItems[index].value = isChecked;
-              setItems(newItems);
+              setHospitals(newItems);
             }}
           />
         );
@@ -66,20 +69,6 @@ const YearlyQuestion = ({navigation}) => {
         <View>{renderBouncyCheckboxes()}</View>
       </View>)
     };
-    function getAreas(){
-      axios.get('http://192.168.1.128:3000/api/hosp-areas')
-      .then((response) => {
-        // Transform the response data into the format { label: '...', value: false }
-        const hospAreas = response.data.map(area => ({ label: area.name, value: false }));
-        setItemz(hospAreas);
-        setIsLoading(false);
-        console.log(itemz);
-      })
-      .catch(error => {
-        console.error('Error fetching hosp areas', error);
-      });
-
-    }
 
     // Declare a state variable to track the font loading status
  const [isFontLoaded, setFontLoaded] = useState(false);
@@ -99,11 +88,12 @@ const YearlyQuestion = ({navigation}) => {
   // Call the loadFont function
   loadFont();
   // getAreas();
-fetchData(setItemz, setIsLoading);
+fetchHospitalAreas(setHospitals, setIsHospitalsLoading);
+fetchNursePatientRatios(setNursePatientRatio, setIsRatiosLoading)
 
 }, []);
 
-if (isLoading) {
+if (isHospitalsLoading && isRatiosLoading && !isFontLoaded) {
   return <Text>Loading </Text>; // Or some other placeholder
 }
       /*hosp units where BCPAP is used: Which hosp areas bCPAP is used in - PICU, NICU, CICU, 
@@ -182,20 +172,20 @@ if (isLoading) {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={nurseToPatientData}
+        data={nursePatientRatio}
         search
         maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder={!isFocus ? 'Usual Nurse to Patient Ratio' : '...'}
         searchPlaceholder="Search..."
-        value={value}
+        value={selecedRatio}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-          setValue(item.value);
+          setSelectedRatio(item.value);
           console.log(item.value);
-          console.log(value)
+          console.log(selecedRatio)
           setIsFocus(false);
         }}
         />

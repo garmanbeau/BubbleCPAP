@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,27 +9,24 @@ import {
 import Slider from "@react-native-community/slider";
 import { Dropdown } from "react-native-element-dropdown";
 import styles from '../shared/styles';
-
+import { fetchOxygenSources, fetchbCPAPTypes } from "../shared/api";
 const TextInputExample = ({ navigation }) => {
   const [text, onChangeText] = React.useState("");
   const [text2, onChangeText2] = React.useState("");
   const [text3, onChangeText3] = React.useState("");
   const [text4, onChangeText4] = React.useState("");
-  const [text5, onChangeText5] = React.useState("");
-  const [text6, onChangeText6] = React.useState("");
-  const [text7, onChangeText7] = React.useState("");
-  const [text8, onChangeText8] = React.useState("");
-  const [text10, onChangeText10] = React.useState("");
-  const [text11, onChangeText11] = React.useState("");
-  const [text12, onChangeText12] = React.useState("");
-  const [text13, onChangeText13] = React.useState("");
 
   const [minPressureValue, setMinPressureValue] = useState(null);
   const [maxPressureValue, setMaxPressureValue] = useState(null);
-  const [oxygenSource, setOxygenSource] = useState("");
+  const [oxygenSource, setOxygenSource] = useState('');
+
   const [isFocus, setIsFocus] = useState(false); //TODO: define different isfocus vars
   const [bcpapUseLength, setBcpapUseLength] = useState(null);
   const [bcpapDeviceType, setBcpapDeviceType] = useState(null);
+
+  const [oxygenSourceOptions, setOxygenSourceOptions] = useState([]);
+  const [bcpapUseLengthOptions, setBcpapUseLengthOptions] = useState([]);
+  const [bcpapDeviceTypeOptions, setBcpapDeviceTypeOptions] = useState([]);
 
   const data = [
     { label: "Tank/Cylinder", value: "Tank/Cylinder" },
@@ -55,6 +52,18 @@ const TextInputExample = ({ navigation }) => {
   //         1-3days
   //         3-7days
   //         >7days
+
+  const [isBcpapTypesLoading, setIsBcpapTypesLoading] = useState(true);
+  const [isOxygenLoading, setIsOxygenLoading] = useState(true);
+
+  useEffect(() => {
+    fetchbCPAPTypes(setBcpapDeviceTypeOptions, setIsBcpapTypesLoading);
+    fetchOxygenSources(setOxygenSourceOptions, setIsOxygenLoading);
+  }, []);
+
+  if (isBcpapTypesLoading || isOxygenLoading) {
+    return <Text>Loading </Text>; // Or some other placeholder
+  }
   return (
     <SafeAreaView>
       <TextInput
@@ -75,7 +84,7 @@ const TextInputExample = ({ navigation }) => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={deviceData}
+        data={bcpapDeviceTypeOptions}
         maxHeight={300}
         labelField="label"
         valueField="value"
@@ -121,7 +130,7 @@ const TextInputExample = ({ navigation }) => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={dayData}
+        data={bcpapUseLengthOptions}
         maxHeight={300}
         labelField="label"
         valueField="value"
@@ -187,7 +196,7 @@ const TextInputExample = ({ navigation }) => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={data}
+        data={oxygenSourceOptions}
         maxHeight={300}
         labelField="label"
         valueField="value"
@@ -202,7 +211,7 @@ const TextInputExample = ({ navigation }) => {
           setIsFocus(false);
         }}
       />
-      {oxygenSource.includes("Other") && (
+      {oxygenSource.includes('other') && (
         // Render a textinput element if the condition is true
         <TextInput placeholder="Please specify" />
       )}

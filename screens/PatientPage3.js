@@ -4,6 +4,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Font from 'expo-font';
 import { FontAwesome5 } from '@expo/vector-icons';
 import styles from '../shared/styles';
+import { fetchbCPAPComplications, fetchPatientOutcomes } from "../shared/api";
 
 
 const TextInputExample = ({ navigation }) => {
@@ -20,6 +21,12 @@ const TextInputExample = ({ navigation }) => {
  // Declare a state variable to track the font loading status
  const [isFontLoaded, setFontLoaded] = useState(false);
 
+ const [patientOutcomeOptions, setPatientOutcomeOptions] = useState([]);
+  const [bCPAPComplicationOptions, setbCPAPComplicationOptions] = useState([]);
+  const [isLoadingOutcomes, setIsLoadingOutcomes] = useState(true);
+  const [isLoadingComplications, setIsLoadingComplications] = useState(true);
+
+
  // Use the useEffect hook to load the font
  useEffect(() => {
   // Define an async function to load the font
@@ -33,6 +40,9 @@ const TextInputExample = ({ navigation }) => {
   };
   // Call the loadFont function
   loadFont();
+
+  fetchPatientOutcomes(setPatientOutcomeOptions, setIsLoadingOutcomes);
+  fetchbCPAPComplications(setbCPAPComplicationOptions, setIsLoadingComplications);
 }, []);
   
     const [outcomeItems, setOutcomeItems] = useState([
@@ -65,9 +75,9 @@ const TextInputExample = ({ navigation }) => {
             const newItems = [...array];
             newItems[index].value = isChecked;
 
-            if ( array == outcomeItems){
+            if ( array == patientOutcomeOptions){
               setOutcomeItems(newItems);
-            } else if ( array == complicationItems){
+            } else if ( array == bCPAPComplicationOptions){
               setComplicationItems(newItems);
             }
           }}
@@ -88,7 +98,7 @@ const TextInputExample = ({ navigation }) => {
       return(
         <View>
           <Text>Select all interfaces that apply</Text>
-          <View>{renderBouncyCheckboxes(outcomeItems)}</View>
+          <View>{renderBouncyCheckboxes(patientOutcomeOptions)}</View>
         </View>
       )}
 
@@ -96,12 +106,12 @@ const TextInputExample = ({ navigation }) => {
         return(
           <View>
              <Text>Select all Complications that apply</Text>
-              <View>{renderBouncyCheckboxes(complicationItems)}</View>
+              <View>{renderBouncyCheckboxes(bCPAPComplicationOptions)}</View>
           </View>
         )
       }
   return (
-    isFontLoaded ? (
+    isFontLoaded && !isLoadingComplications && !isLoadingOutcomes ?  (
     <SafeAreaView>
       <TextInput
         style={styles.input}

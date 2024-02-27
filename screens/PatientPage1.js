@@ -1,14 +1,15 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {
   View,
   SafeAreaView,
   StyleSheet,
   TextInput,
   Button,
+  Text,
 } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from '../shared/styles';
-
+import { fetchSexAtBirth } from "../shared/api";
 
 const TextInputExample = ({ navigation }) => {
   const [text, onChangeText] = React.useState("");
@@ -20,12 +21,24 @@ const TextInputExample = ({ navigation }) => {
   const [isFocus, setIsFocus] = useState(false);
   const [value, setValue] = useState('');
 
+  const [sexAtBirth, setSexAtBirth] = useState([]); //TODO: change name to something that designates it a dropdown value
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  
   const data =[
     {label: "Male", value: "Male"}, 
     {label: "Female", value: "Female"}, 
     {label: "Other", value: "Other"}, 
   ];
+  useEffect(() => {
+    fetchSexAtBirth(setSexAtBirth, setIsLoading);
+  }, []);
+
+  if (isLoading) {
+    return <Text>Loading </Text>; // Or some other placeholder
+  }
+
   return (
     <SafeAreaView>
       <TextInput
@@ -46,7 +59,7 @@ const TextInputExample = ({ navigation }) => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={data}
+        data={sexAtBirth}
         maxHeight={300}
         labelField="label"
         valueField="value"
@@ -62,7 +75,7 @@ const TextInputExample = ({ navigation }) => {
           setIsFocus(false);
         }}
         />
-        {value.includes('Other') && (
+        {value.includes('other') && (
         // Render a textinput element if the condition is true
         <TextInput placeholder="Please specify" />
       )}
