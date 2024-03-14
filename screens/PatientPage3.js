@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from "react";
 import { View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity, Text } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Font from 'expo-font';
 import { FontAwesome5 } from '@expo/vector-icons';
 import styles from '../shared/styles';
-import { fetchbCPAPComplications, fetchPatientOutcomes } from "../shared/api";
+import { fetchbCPAPComplications, fetchPatientOutcomes, fetchO2BlendingOptions, fetchPatientInterfaces } from "../shared/api";
 
 
 const TextInputExample = ({ navigation }) => {
@@ -18,13 +19,23 @@ const TextInputExample = ({ navigation }) => {
   const [isTextInputVisible2, setTextInputVisibility2] = useState(false);
   const [ isPneumothorax, setPneumothorax] = useState(false);
 
+  const [isFocus, setIsFocus] = useState(false); 
+
  // Declare a state variable to track the font loading status
  const [isFontLoaded, setFontLoaded] = useState(false);
-
+ 
+ const [o2BlendingOptions, setO2BlendingOptions] = useState([]);
  const [patientOutcomeOptions, setPatientOutcomeOptions] = useState([]);
+ const [patientInterfaceOptions, setPatientInterfaceOptions] = useState([]);
   const [bCPAPComplicationOptions, setbCPAPComplicationOptions] = useState([]);
+
   const [isLoadingOutcomes, setIsLoadingOutcomes] = useState(true);
   const [isLoadingComplications, setIsLoadingComplications] = useState(true);
+  const [isLoadingBlendingOptions, setIsLoadingBlending] = useState(true);
+  const [isLoadingInterfaceOptions, setIsLoadingInterfaceOptions] = useState(true);
+
+  const[o2BlendSelected, setO2BlendSelected] = useState(null);
+  const[patientInterfaceSelected, setPatientInterfaceSelected] = useState(null);
 
 
  // Use the useEffect hook to load the font
@@ -43,6 +54,8 @@ const TextInputExample = ({ navigation }) => {
 
   fetchPatientOutcomes(setPatientOutcomeOptions, setIsLoadingOutcomes);
   fetchbCPAPComplications(setbCPAPComplicationOptions, setIsLoadingComplications);
+  fetchO2BlendingOptions(setO2BlendingOptions, setIsLoadingBlending);
+  fetchPatientInterfaces(setPatientInterfaceOptions, setIsLoadingInterfaceOptions);
 }, []);
   
     const [outcomeItems, setOutcomeItems] = useState([
@@ -110,14 +123,52 @@ const TextInputExample = ({ navigation }) => {
           </View>
         )
       }
+
+
   return (
-    isFontLoaded && !isLoadingComplications && !isLoadingOutcomes ?  (
+    isFontLoaded && !isLoadingComplications && !isLoadingOutcomes && !isLoadingBlendingOptions?  (
     <SafeAreaView>
-      <TextInput
-        style={styles.input}
-        placeholder="Method of oxygen blending"
-        onChangeText={onChangeText9}
-        value={text9}
+      <Dropdown
+        style={[styles.input, isFocus && { borderColor: "blue" }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={o2BlendingOptions}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? "Method of Oxygen Blending" : "..."}
+        searchPlaceholder="Search..."
+        value={o2BlendSelected}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setO2BlendSelected(item.value);
+          console.log(item.value);
+          setIsFocus(false);
+        }}
+      />
+      <Dropdown
+        style={[styles.input, isFocus && { borderColor: "blue" }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={patientInterfaceOptions}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? "Patient Interface" : "..."}
+        searchPlaceholder="Search..."
+        value={patientInterfaceSelected}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setPatientInterfaceOptions(item.value);
+          console.log(item.value);
+          setIsFocus(false);
+        }}
       />
       <TextInput
         style={styles.input}

@@ -103,6 +103,78 @@ app.get('/api/bcpap-complications', (req, res) => {
   });
 });
 
+// Endpoint to get bCPAP use lengths
+app.get('/api/bcpap-use-lengths', (req, res) => {
+  db.query('SELECT * FROM bCPAPUseLength', (err, results) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+// Endpoint to get reasons to start bCPAP
+app.get('/api/start-bcpap-reasons', (req, res) => {
+  db.query('SELECT * FROM StartbCPAPReasons', (err, results) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+// Endpoint to get reasons to stop bCPAP
+app.get('/api/stop-bcpap-reasons', (req, res) => {
+  db.query('SELECT * FROM StopbCPAPReasons', (err, results) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+// Endpoint to get O2 blending options
+app.get('/api/o2-blending-options', (req, res) => {
+  db.query('SELECT * FROM O2BlendingOptions', (err, results) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+// Endpoint to get hospitals
+app.get('/api/getHospitals', (req, res) => {
+  db.query('SELECT * FROM Hospitals', (err, results) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+// Endpoint to add a hospital
+app.post('/api/postHospitals', (req, res) => {
+  const { country, city, name } = req.body;
+  const query = 'INSERT INTO Hospitals (country, city, name) VALUES (?, ?, ?)';
+  db.query(query, [country, city, name], (err, result) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    res.json({ success: true, message: 'Hospital added successfully' });
+  });
+});
+
+//Endpoint to get patientInterface options
+app.get('/api/getPatientInterfaces', (req, res) => {
+  db.query('SELECT * FROM PatientInterface', (err, results) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
 
 // Serve your application at the given port
 app.listen(port, () => {

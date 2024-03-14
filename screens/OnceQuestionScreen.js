@@ -1,6 +1,7 @@
 import React from 'react';
 import {SafeAreaView, TextInput, Button} from 'react-native';
 import styles from '../shared/styles';
+import { addHospital } from '../shared/api';
 
 
 const TextInputExample = ({navigation}) => {
@@ -29,7 +30,22 @@ const TextInputExample = ({navigation}) => {
         value={text3}
       />
       <Button title="Next"
-        onPress={() => navigation.navigate("Yearly Questions")}/>
+  onPress={() => {
+    const hospital = {
+      city: text,
+      country: text2,
+      name: text3
+    };
+    addHospital(hospital)
+      .then(() => {
+        navigation.navigate("HospitalSelect", { reload: Date.now() });
+      })
+      .catch((error) => {
+        console.error('Error adding hospital', error);
+      });
+  }}
+/>
+
     </SafeAreaView>
   );
 };

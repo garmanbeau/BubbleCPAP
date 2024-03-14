@@ -5,28 +5,48 @@ import {
   TextInput,
   Button,
   Text,
+  TouchableOpacity, 
+  View
 } from "react-native";
 import Slider from "@react-native-community/slider";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Dropdown } from "react-native-element-dropdown";
 import styles from '../shared/styles';
-import { fetchOxygenSources, fetchbCPAPTypes } from "../shared/api";
+import { fetchOxygenSources, fetchStartbCPAPReasons, fetchStopbCPAPReasons, fetchbCPAPTypes, fetchbCPAPUseLengths } from "../shared/api";
+import * as Font from 'expo-font';
+import { FontAwesome5 } from '@expo/vector-icons';
 const TextInputExample = ({ navigation }) => {
   const [text, onChangeText] = React.useState("");
   const [text2, onChangeText2] = React.useState("");
   const [text3, onChangeText3] = React.useState("");
   const [text4, onChangeText4] = React.useState("");
+  
+  const [isTextInputVisible, setTextInputVisibility] = useState(false);
+  const [isTextInputVisible2, setTextInputVisibility2] = useState(false);
 
+  const [isFocus, setIsFocus] = useState(false); //TODO: define different isfocus vars
+  const [isFontLoaded, setFontLoaded] = useState(false);
   const [minPressureValue, setMinPressureValue] = useState(null);
   const [maxPressureValue, setMaxPressureValue] = useState(null);
   const [oxygenSource, setOxygenSource] = useState('');
-
-  const [isFocus, setIsFocus] = useState(false); //TODO: define different isfocus vars
   const [bcpapUseLength, setBcpapUseLength] = useState(null);
   const [bcpapDeviceType, setBcpapDeviceType] = useState(null);
+  const [startbCPAPReason, setStartbCPAPReason] = useState(null);
+  const [stopbCPAPReason, setStopbCPAPReason] = useState(null);
 
+
+  
   const [oxygenSourceOptions, setOxygenSourceOptions] = useState([]);
   const [bcpapUseLengthOptions, setBcpapUseLengthOptions] = useState([]);
   const [bcpapDeviceTypeOptions, setBcpapDeviceTypeOptions] = useState([]);
+  const [startbCPAPReasonOptions, setStartbCPAPReasonOptions] = useState([]);
+  const [stopbCPAPReasonOptions, setStopbCPAPReasonOptions] = useState([]);
+  
+  const [isLoadingStartReasons, setIsLoadingStartReasons] = useState(true);
+  const [isLoadingStopReasons, setIsLoadingStopReasons] = useState(true);
+  const [isBcpapTypesLoading, setIsBcpapTypesLoading] = useState(true);
+  const [isOxygenLoading, setIsOxygenLoading] = useState(true);
+  const [isLengthsLoading, setIsLengthsLoading] = useState(true);
 
   const data = [
     { label: "Tank/Cylinder", value: "Tank/Cylinder" },
@@ -53,15 +73,66 @@ const TextInputExample = ({ navigation }) => {
   //         3-7days
   //         >7days
 
-  const [isBcpapTypesLoading, setIsBcpapTypesLoading] = useState(true);
-  const [isOxygenLoading, setIsOxygenLoading] = useState(true);
+  const renderBouncyCheckboxes = (array) => {
+    return array.map((item, index) => {
+      return (
+        <BouncyCheckbox
+          key={index}
+          text={item.label}
+          isChecked={item.value}
+          textStyle={{ textDecorationLine: 'none' }}
+          onPress={(isChecked) => {
+            // Update the value of the item in the array
+            const newItems = [...array];
+            newItems[index].value = isChecked;
 
+            if ( array == startbCPAPReasonOptions){
+              setStartbCPAPReason(newItems);
+            } else if ( array == stopbCPAPReasonOptions){
+              setStopbCPAPReason(newItems);
+            }
+          }}
+        />
+      );
+    });
+  };
+  const startBCPAPView = () => {
+    return(
+      <View>
+        <Text>Select all reasons that apply</Text>
+        <View>{renderBouncyCheckboxes(startbCPAPReasonOptions)}</View>
+      </View>
+    )}
+
+    const stopBCPAPView = () => {
+      return(
+        <View>
+           <Text>Select all reasons that apply</Text>
+            <View>{renderBouncyCheckboxes(stopbCPAPReasonOptions)}</View>
+        </View>
+      )
+    }
   useEffect(() => {
+
+    const loadFont = async () => {
+      // Use the Font.loadAsync method and pass the font name and the font file path as an object
+      await Font.loadAsync({
+        'Font Awesome 5 Free': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf'),
+      });
+      // Update the state variable to true when the font is loaded
+      setFontLoaded(true);
+    };
+    // Call the loadFont function
+    loadFont();
+
     fetchbCPAPTypes(setBcpapDeviceTypeOptions, setIsBcpapTypesLoading);
     fetchOxygenSources(setOxygenSourceOptions, setIsOxygenLoading);
+    fetchbCPAPUseLengths(setBcpapUseLengthOptions, setIsLengthsLoading);
+    fetchStartbCPAPReasons(setStartbCPAPReasonOptions, setIsLoadingStartReasons);
+    fetchStopbCPAPReasons(setStopbCPAPReasonOptions, setIsLoadingStopReasons);
   }, []);
 
-  if (isBcpapTypesLoading || isOxygenLoading) {
+  if (!isFontLoaded && (isBcpapTypesLoading || isOxygenLoading || isLengthsLoading ||isLoadingStartReasons || isLoadingStopReasons)) {
     return <Text>Loading </Text>; // Or some other placeholder
   }
   return (
@@ -78,7 +149,7 @@ const TextInputExample = ({ navigation }) => {
         onChangeText={onChangeText2}
         value={text2}
       />
-      <Dropdown
+      {/* <Dropdown
         style={[styles.input, isFocus && { borderColor: "blue" }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
@@ -99,18 +170,73 @@ const TextInputExample = ({ navigation }) => {
           setIsFocus(false);
         }}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Reason for Bubble CPAP use"
-        onChangeText={onChangeText3}
-        value={text3}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Reason for Bubble CPAP discontinuation"
-        onChangeText={onChangeText4}
-        value={text4}
-      />
+      <Dropdown
+        style={[styles.input, isFocus && { borderColor: "blue" }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={startbCPAPReasonOptions}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? "Reason for Bubble CPAP use" : "..."}
+        searchPlaceholder="Search..."
+        value={startbCPAPReason}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setStartbCPAPReason(item.value);
+          console.log(item.value);
+          setIsFocus(false);
+        }}
+      /> */}
+ <TouchableOpacity onPress={() => setTextInputVisibility(!isTextInputVisible)}>
+      <Text style ={styles.headerText}> Patient Outcomes {' '}
+          {isTextInputVisible ? (
+            // Use a right arrow icon from Font Awesome
+            <FontAwesome5 name="angle-down" size={24} color="black" />
+          ) : (
+            // Use a down arrow icon from Font Awesome
+            <FontAwesome5 name="angle-right" size={24} color="black" />
+          )}</Text>
+     </TouchableOpacity>
+
+        {isTextInputVisible && <View>{startBCPAPView()}</View>}
+{/* <Dropdown
+        style={[styles.input, isFocus && { borderColor: "blue" }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={stopbCPAPReasonOptions}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? "Reason for Bubble CPAP discontinuation" : "..."}
+        searchPlaceholder="Search..."
+        value={stopbCPAPReason}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setStopbCPAPReason(item.value);
+          console.log(item.value);
+          setIsFocus(false);
+        }}
+      /> */}
+
+        <TouchableOpacity onPress={() => setTextInputVisibility2(!isTextInputVisible2)}>
+      <Text style={styles.headerText}> Did complications arise {' '}
+      {isTextInputVisible2 ? (
+            // Use a right arrow icon from Font Awesome
+            <FontAwesome5 name="angle-down" size={24} color="black" />
+          ) : (
+            // Use a down arrow icon from Font Awesome
+            <FontAwesome5 name="angle-right" size={24} color="black" />
+          )}</Text>
+     </TouchableOpacity>
+     {isTextInputVisible2 && <View>{stopBCPAPView()}</View>}
+
       {/* consider For how long used - wonder if we put some parameters or if we want the actual number of days?
         <1 day
         1-3days

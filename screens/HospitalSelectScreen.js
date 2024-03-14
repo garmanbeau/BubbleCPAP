@@ -18,27 +18,37 @@ import { StatusBar } from 'expo-status-bar';
 //     justifyContent: 'center',
 //   },
 // });
-
-import React, { useState } from 'react';
+import { useRoute } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from '../shared/styles';
+import { fetchHospitals } from '../shared/api';
+
 //import AntDesign from '@expo/vector-icons/AntDesign';
 
-const data = [
-  { label: 'Mayo Clinic | Rochester', value: '1' },
-  { label: 'Abbott Northwestern Hospital | Minneapolis', value: '2' },
-  { label: 'CentraCare-St. Cloud Hospital | St. Cloud', value: '3' },
-  { label: 'Park Nicollet Methodist Hospital | St. Louis Park', value: '4' },
-  { label: 'Essentia Health-St. Mary’s Medical Center | Duluth', value: '5' },
-  { label: 'M Health Fairview Southdale Hospital | Edina', value: '6' },
-  { label: 'United Hospital | St. Paul', value: '7' },
-  { label: 'Mercy Hospital | Coon Rapids', value: '8' },
-];
+// const data = [
+//   { label: 'Mayo Clinic | Rochester', value: '1' },
+//   { label: 'Abbott Northwestern Hospital | Minneapolis', value: '2' },
+//   { label: 'CentraCare-St. Cloud Hospital | St. Cloud', value: '3' },
+//   { label: 'Park Nicollet Methodist Hospital | St. Louis Park', value: '4' },
+//   { label: 'Essentia Health-St. Mary’s Medical Center | Duluth', value: '5' },
+//   { label: 'M Health Fairview Southdale Hospital | Edina', value: '6' },
+//   { label: 'United Hospital | St. Paul', value: '7' },
+//   { label: 'Mercy Hospital | Coon Rapids', value: '8' },
+// ];
+
 
 const DropdownComponent = ({ navigation }) => {
+  const route = useRoute();
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+  const [hospitalOptions, setHospitalOptions] = useState([]);
+    const [isLoadingHospitals, setIsLoadingHospitals] = useState(true);
+
+    useEffect(() => {
+      fetchHospitals(setHospitalOptions, setIsLoadingHospitals);
+    }, [route.params?.reload]);
 
   const renderLabel = () => {
     if (value || isFocus) {
@@ -50,7 +60,9 @@ const DropdownComponent = ({ navigation }) => {
     }
     return null;
   };
-
+  if (isLoadingHospitals) {
+    return <Text>Loading </Text>; // Or some other placeholder
+  }
   return (
     <View style={styles.container}>
       {renderLabel()}
@@ -60,7 +72,7 @@ const DropdownComponent = ({ navigation }) => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={data}
+        data={hospitalOptions}
         search
         maxHeight={300}
         labelField="label"
