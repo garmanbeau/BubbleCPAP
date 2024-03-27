@@ -6,7 +6,7 @@ import {
   Button,
   Text,
   TouchableOpacity, 
-  View
+  View,
 } from "react-native";
 import Slider from "@react-native-community/slider";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -15,7 +15,14 @@ import styles from '../shared/styles';
 import { fetchOxygenSources, fetchStartbCPAPReasons, fetchStopbCPAPReasons, fetchbCPAPTypes, fetchbCPAPUseLengths } from "../shared/api";
 import * as Font from 'expo-font';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useRoute } from "@react-navigation/native";
+
 const TextInputExample = ({ navigation }) => {
+  route = useRoute();
+
+  const [patient, setPatient] = useState(route.params.patient);
+
+
   const [text, onChangeText] = React.useState("");
   const [text2, onChangeText2] = React.useState("");
   const [text3, onChangeText3] = React.useState("");
@@ -87,9 +94,11 @@ const TextInputExample = ({ navigation }) => {
             newItems[index].value = isChecked;
 
             if ( array == startbCPAPReasonOptions){
-              setStartbCPAPReason(newItems);
+              //setStartbCPAPReason(newItems);
+              setPatient({ ...patient, StartBCPAPReasons: newItems });
             } else if ( array == stopbCPAPReasonOptions){
-              setStopbCPAPReason(newItems);
+              // setStopbCPAPReason(newItems);
+              setPatient({ ...patient, StopBCPAPReasons: newItems });
             }
           }}
         />
@@ -140,16 +149,22 @@ const TextInputExample = ({ navigation }) => {
       <TextInput
         style={styles.input}
         placeholder="Prior medical history of chronic disease"
-        onChangeText={onChangeText}
-        value={text}
+        onChangeText={(text) => {
+          setPatient({ ...patient, MedicalHistory: text });
+        }}
+        value={patient.MedicalHistory}
+        
       />
       <TextInput
         style={styles.input}
-        placeholder="Bubble CPAP expiratory limb size (measured in millimeters or centimeters)" //( do we want to put tubing types instead? - standard oxygen tubing, corrugated tubing, or other?)
-        onChangeText={onChangeText2}
-        value={text2}
-      />
-      {/* <Dropdown
+        placeholder="Bubble CPAP expiratory limb size (measured in millimeters)" //( do we want to put tubing types instead? - standard oxygen tubing, corrugated tubing, or other?)
+        onChangeText={(text) => {
+          setPatient({ ...patient, BubbleCPAPExpiratoryLimbSizeMM: text });
+        }}
+        value={patient.BubbleCPAPExpiratoryLimbSizeMM}
+        keyboardType="numeric"
+        />
+         <Dropdown
         style={[styles.input, isFocus && { borderColor: "blue" }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
@@ -161,15 +176,16 @@ const TextInputExample = ({ navigation }) => {
         valueField="value"
         placeholder={!isFocus ? "BCPAP device used" : "..."}
         searchPlaceholder="Search..."
-        value={bcpapUseLength}
+        //value={bcpapUseLength}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setBcpapUseLength(item.value);
+          setPatient({ ...patient, BCPAPTypeDeviceUsed: item.value });
           console.log(item.value);
           setIsFocus(false);
         }}
       />
+      {/*
       <Dropdown
         style={[styles.input, isFocus && { borderColor: "blue" }]}
         placeholderStyle={styles.placeholderStyle}
@@ -192,7 +208,7 @@ const TextInputExample = ({ navigation }) => {
         }}
       /> */}
  <TouchableOpacity onPress={() => setTextInputVisibility(!isTextInputVisible)}>
-      <Text style ={styles.headerText}> Patient Outcomes {' '}
+      <Text style ={styles.headerText}> Reasons to Start BCPAP {' '}
           {isTextInputVisible ? (
             // Use a right arrow icon from Font Awesome
             <FontAwesome5 name="angle-down" size={24} color="black" />
@@ -226,7 +242,7 @@ const TextInputExample = ({ navigation }) => {
       /> */}
 
         <TouchableOpacity onPress={() => setTextInputVisibility2(!isTextInputVisible2)}>
-      <Text style={styles.headerText}> Did complications arise {' '}
+      <Text style={styles.headerText}> Reasons to Stop BCPAP {' '}
       {isTextInputVisible2 ? (
             // Use a right arrow icon from Font Awesome
             <FontAwesome5 name="angle-down" size={24} color="black" />
@@ -262,11 +278,12 @@ const TextInputExample = ({ navigation }) => {
         valueField="value"
         placeholder={!isFocus ? "Duration of Bubble CPAP use" : "..."}
         searchPlaceholder="Search..."
-        value={bcpapDeviceType}
+        //value={bcpapDeviceType}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setBcpapDeviceType(item.value);
+          //setBcpapDeviceType(item.value);
+          setPatient({ ...patient, DurationOfBubbleCPAPUse: item.value });
           console.log(item.value);
           setIsFocus(false);
         }}
@@ -285,7 +302,9 @@ const TextInputExample = ({ navigation }) => {
         step={1}
         value={minPressureValue}
         // Update the state variable when the slider changes
-        onValueChange={(newValue) => setMinPressureValue(newValue)}
+        onValueChange={(newValue) => {
+          setPatient({ ...patient, MinPressure: newValue });
+        }}
         minimumTrackTintColor="#FFFFFF"
         maximumTrackTintColor="#000000"
       />
@@ -299,11 +318,13 @@ const TextInputExample = ({ navigation }) => {
       <Slider
         style={{ width: 200, height: 40 }}
         minimumValue={0}
-        maximumValue={10}
+        maximumValue={15}
         step={1}
         value={maxPressureValue}
         // Update the state variable when the slider changes
-        onValueChange={(newValue) => setMaxPressureValue(newValue)}
+        onValueChange={(newValue) => {
+          setPatient({ ...patient, MaxPressure: newValue });
+        }}
         minimumTrackTintColor="#FFFFFF"
         maximumTrackTintColor="#000000"
       />
@@ -332,20 +353,29 @@ const TextInputExample = ({ navigation }) => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setOxygenSource(item.value);
+          // setOxygenSource(item.value);
+          setPatient({ ...patient, PrimarySourceOfOxygen: item.value });
           console.log(item.value);
           setIsFocus(false);
         }}
       />
-      {oxygenSource.includes('other') && (
+      {/* TODO: Make some sort of workaround so this field doesn't automatically
+      close when you type */}
+      {patient.PrimarySourceOfOxygen.includes('other') && (
         // Render a textinput element if the condition is true
-        <TextInput placeholder="Please specify" />
+        <TextInput placeholder="Please specify" 
+          onChangeText={ (text) => {
+            setPatient({ ...patient, PrimarySourceOfOxygen: text })
+          }}
+        />
       )}
       
 
       <Button
         title="Next"
-        onPress={() => navigation.navigate("PatientPage3")}
+        onPress={() => navigation.navigate("PatientPage3", {patient})}
+          // onPress={() => console.log(patient)}
+
       />
     </SafeAreaView>
   );

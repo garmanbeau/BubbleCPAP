@@ -1,13 +1,19 @@
 import React, { useState, useEffect }from 'react';
-import {Text, View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity} from 'react-native';
+import {Text, View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity, Alert} from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Font from 'expo-font';
 import { FontAwesome5 } from '@expo/vector-icons';
 import styles from '../shared/styles';
-import { fetchNursePatientRatios, fetchHospitalAreas } from '../shared/api';
+import { useRoute } from "@react-navigation/native";
+import { fetchNursePatientRatios, fetchHospitalAreas, addHospitalData } from '../shared/api';
 
 const YearlyQuestion = ({navigation}) => {
+  route = useRoute();
+  const [patient, setPatient] = useState(route.params.patient);
+const [hospital, setHospital] = useState(route.params.hospital);
+const [isLoading, setIsLoading] = useState(false);
+const [buttonTitle, setButtonTitle] = useState('Next');
   const [isTextInputVisible, setTextInputVisibility] = useState(false);
 
     const [numOfUnitsAtHostpital, onChangeText] = React.useState('');
@@ -56,7 +62,8 @@ const YearlyQuestion = ({navigation}) => {
               // Update the value of the item in the array
               const newItems = [...hospitals];
               newItems[index].value = isChecked;
-              setHospitals(newItems);
+              // setHospitals(newItems);
+              setHospital({...hospital, units: newItems});
             }}
           />
         );
@@ -70,6 +77,19 @@ const YearlyQuestion = ({navigation}) => {
       </View>)
     };
 
+    const handleSubmit = async (hospital) => {
+      setIsLoading(true);
+      setButtonTitle('Loading...');
+  
+      try {
+        await addHospitalData(hospital);
+        navigation.navigate('PatientPage1', {patient});
+      } catch (error) {
+        setIsLoading(false);
+        setButtonTitle('Next');
+        Alert.alert('Error', 'There was an error submitting patient data.');
+      }
+    };
     // Declare a state variable to track the font loading status
  const [isFontLoaded, setFontLoaded] = useState(false);
 
@@ -104,23 +124,29 @@ if (isHospitalsLoading && isRatiosLoading && !isFontLoaded) {
       <TextInput
         style={styles.input}
         placeholder='# of bCPAP Units available at hostpital' //make numeric
-        onChangeText={onChangeText}
-        value={numOfUnitsAtHostpital}
         keyboardType="numeric"
+        onChangeText={(text)=> {
+          setHospital({...hospital, BCPAPUnitsAvailable: text})
+        }}
+        value={hospital.BCPAPUnitsAvailable}
       />
       <TextInput
         style={styles.input}
         placeholder='Approximate # of pediatric admissions for respitory illnesses per month' //add approximate to questions and make numeric 
-        onChangeText={onChangeText2}
-        value={numOfPedAdPerMonth}
         keyboardType="numeric"
+        onChangeText={(text)=> {
+          setHospital({...hospital, PediatricAdmissionsPerMonth: text})
+        }}
+        value={hospital.PediatricAdmissionsPerMonth}
       />
       <TextInput
         style={styles.input}
         placeholder='Approximate # of how many children are placed on bCPAP per month' //change to How many children placed on bCPAP per month  (approximate)- number only
-        onChangeText={onChangeText3}
-        value={numOfPedAdReqBCPAPPerMonth}
         keyboardType="numeric"
+        onChangeText={(text)=> {
+          setHospital({...hospital, ChildrenOnBCPAPPerMonth: text})
+        }}
+        value={hospital.ChildrenOnBCPAPPerMonth}
       />
      <TouchableOpacity onPress={() => setTextInputVisibility(!isTextInputVisible)}>
       <Text style={styles.headerText}> Units that use BCPAP {' '}
@@ -158,9 +184,11 @@ if (isHospitalsLoading && isRatiosLoading && !isFontLoaded) {
 <TextInput
         style={styles.input}
         placeholder='# of respiratory specialists available' // make numeric
-        onChangeText={onChangeText3}
-        value={numOfPedAdReqBCPAPPerMonth}
         keyboardType="numeric"
+        onChangeText={(text)=> {
+          setHospital({...hospital, RespiratorySpecialistsAvailable: text})
+        }}
+        value={hospital.RespiratorySpecialistsAvailable}
       />
 
       {/* 
@@ -183,14 +211,18 @@ if (isHospitalsLoading && isRatiosLoading && !isFontLoaded) {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-          setSelectedRatio(item.value);
+          // setSelectedRatio(item.value);
+          setHospital({...hospital, NurseToPatientRatio: item.value})
           console.log(item.value);
           console.log(selecedRatio)
           setIsFocus(false);
         }}
         />
-      <Button title="Next"
-        onPress={() => navigation.navigate("PatientPage1")}/>
+      <Button
+      title={buttonTitle}
+      onPress={() => handleSubmit(hospital)}
+      disabled={isLoading}
+    />
     </SafeAreaView>
   );
 };

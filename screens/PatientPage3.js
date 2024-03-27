@@ -1,14 +1,23 @@
 import React, {useState, useEffect} from "react";
-import { View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity, Text } from "react-native";
+import { View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity, Text, Alert } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Font from 'expo-font';
 import { FontAwesome5 } from '@expo/vector-icons';
 import styles from '../shared/styles';
-import { fetchbCPAPComplications, fetchPatientOutcomes, fetchO2BlendingOptions, fetchPatientInterfaces } from "../shared/api";
+import { useRoute } from "@react-navigation/native";
+
+import { fetchbCPAPComplications, fetchPatientOutcomes, fetchO2BlendingOptions, fetchPatientInterfaces, fetchHumidificationOptions, submitPatientData } from "../shared/api";
 
 
 const TextInputExample = ({ navigation }) => {
+  route = useRoute();
+
+  const [patient, setPatient] = useState(route.params.patient);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [buttonTitle, setButtonTitle] = useState('Next');
+
   const [text9, onChangeText9] = React.useState("");
 
   const [text10, onChangeText10] = React.useState("");
@@ -28,16 +37,30 @@ const TextInputExample = ({ navigation }) => {
  const [patientOutcomeOptions, setPatientOutcomeOptions] = useState([]);
  const [patientInterfaceOptions, setPatientInterfaceOptions] = useState([]);
   const [bCPAPComplicationOptions, setbCPAPComplicationOptions] = useState([]);
+  const [humidificationOptions, setHumidificationOptions] = useState([]);
 
   const [isLoadingOutcomes, setIsLoadingOutcomes] = useState(true);
   const [isLoadingComplications, setIsLoadingComplications] = useState(true);
   const [isLoadingBlendingOptions, setIsLoadingBlending] = useState(true);
   const [isLoadingInterfaceOptions, setIsLoadingInterfaceOptions] = useState(true);
+const [isLoadingHumidificationOptions, setIsLoadingHumidificationOptions] = useState(true);
 
   const[o2BlendSelected, setO2BlendSelected] = useState(null);
   const[patientInterfaceSelected, setPatientInterfaceSelected] = useState(null);
 
+const handleSubmit = async (patient) => {
+    setIsLoading(true);
+    setButtonTitle('Loading...');
 
+    try {
+      await submitPatientData(patient);
+      navigation.navigate('Welcome');
+    } catch (error) {
+      setIsLoading(false);
+      setButtonTitle('Next');
+      Alert.alert('Error', 'There was an error submitting patient data.');
+    }
+  };
  // Use the useEffect hook to load the font
  useEffect(() => {
   // Define an async function to load the font
@@ -51,7 +74,7 @@ const TextInputExample = ({ navigation }) => {
   };
   // Call the loadFont function
   loadFont();
-
+  fetchHumidificationOptions(setHumidificationOptions, setIsLoadingHumidificationOptions)
   fetchPatientOutcomes(setPatientOutcomeOptions, setIsLoadingOutcomes);
   fetchbCPAPComplications(setbCPAPComplicationOptions, setIsLoadingComplications);
   fetchO2BlendingOptions(setO2BlendingOptions, setIsLoadingBlending);
@@ -89,9 +112,11 @@ const TextInputExample = ({ navigation }) => {
             newItems[index].value = isChecked;
 
             if ( array == patientOutcomeOptions){
-              setOutcomeItems(newItems);
+              // setOutcomeItems(newItems);
+              setPatient({ ...patient, PatientOutcomes: newItems });
             } else if ( array == bCPAPComplicationOptions){
-              setComplicationItems(newItems);
+              // setComplicationItems(newItems);
+              setPatient({ ...patient, PatientComplications: newItems });
             }
           }}
         />
@@ -126,7 +151,7 @@ const TextInputExample = ({ navigation }) => {
 
 
   return (
-    isFontLoaded && !isLoadingComplications && !isLoadingOutcomes && !isLoadingBlendingOptions?  (
+    isFontLoaded && !isLoadingComplications && !isLoadingOutcomes && !isLoadingBlendingOptions && !isLoadingHumidificationOptions && !isLoadingInterfaceOptions?  (
     <SafeAreaView>
       <Dropdown
         style={[styles.input, isFocus && { borderColor: "blue" }]}
@@ -140,11 +165,12 @@ const TextInputExample = ({ navigation }) => {
         valueField="value"
         placeholder={!isFocus ? "Method of Oxygen Blending" : "..."}
         searchPlaceholder="Search..."
-        value={o2BlendSelected}
+        //value={o2BlendSelected}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setO2BlendSelected(item.value);
+          setPatient({ ...patient, MethodOfOxygenBlending: item.value });
+          //setO2BlendSelected(item.value);
           console.log(item.value);
           setIsFocus(false);
         }}
@@ -161,20 +187,49 @@ const TextInputExample = ({ navigation }) => {
         valueField="value"
         placeholder={!isFocus ? "Patient Interface" : "..."}
         searchPlaceholder="Search..."
-        value={patientInterfaceSelected}
+        //value={patientInterfaceSelected}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setPatientInterfaceOptions(item.value);
+          // setPatientInterfaceOptions(item.value);
+          setPatient({ ...patient, PatientInterface: item.value });
+
           console.log(item.value);
           setIsFocus(false);
         }}
       />
-      <TextInput
+      {/* TODO: Change this to dropdown */}
+      {/* <TextInput
         style={styles.input}
         placeholder="Method of humidification"
-        onChangeText={onChangeText10}
-        value={text10}
+        onChangeText={(text) => {
+          
+        }}
+        value={patient.MethodOfHumidification}
+      /> */}
+
+      <Dropdown
+        style={[styles.input, isFocus && { borderColor: "blue" }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={humidificationOptions}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? "Method of humidification" : "..."}
+        searchPlaceholder="Search..."
+        //value={patientInterfaceSelected}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          // setPatientInterfaceOptions(item.value);
+          setPatient({ ...patient, MethodOfHumidification: item.value });
+
+          console.log(item.value);
+          setIsFocus(false);
+        }}
       />
       {/* <TextInput
         style={styles.input}
@@ -238,7 +293,11 @@ const TextInputExample = ({ navigation }) => {
         // Render a textinput element if the condition is true
         <TextInput placeholder="Please Describe Patient Severity of illness and hot it was diagnosed." />
       )}
-      <Button title="Next" onPress={() => navigation.navigate("Welcome")} />
+      <Button
+      title={buttonTitle}
+      onPress={() => handleSubmit(patient)}
+      disabled={isLoading}
+    />
     </SafeAreaView>) : <Text>Loading...</Text>
   );
 };

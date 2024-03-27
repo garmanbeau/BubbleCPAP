@@ -1,6 +1,6 @@
 import axios from 'axios';
 url = "http://192.168.1.128:3000/api/";
-//url = "http://10.101.1.22:3000/api/";
+// url = "http://10.101.1.39:3000/api/";
 
 export async function fetchHospitalAreas(setData, setIsLoading) {
   try {
@@ -145,7 +145,7 @@ export async function fetchStopbCPAPReasons(setData, setIsLoadingStopReasons) {
 export async function fetchO2BlendingOptions(setData, setIsLoadingBlendingOptions) {
   try {
     const response = await axios.get(url+'o2-blending-options');
-    const data = response.data.map(item => ({ label: item.blend, value: false }));
+    const data = response.data.map(item => ({ label: item.blend, value: item.blend }));
     setData(data);
     setIsLoadingBlendingOptions(false);
     console.log("in fetch data");
@@ -159,7 +159,11 @@ export async function fetchO2BlendingOptions(setData, setIsLoadingBlendingOption
 export async function fetchHospitals(setData, setIsLoadingHospitals) {
   try {
     const response = await axios.get(url+'getHospitals');
-    const data = response.data.map(item => ({ label: `${item.name} | ${item.city}`, value: item.id }));
+    const data = response.data.map(item => ({
+      label: `${item.name} | ${item.city}`,
+      value: item.id,
+      lastQuestionAsked: item.LastQuestionAsked
+    }));
     setData(data);
     setIsLoadingHospitals(false);
     console.log("in fetch data");
@@ -184,7 +188,7 @@ export async function addHospital(hospital) { //I don't think that the loading u
 export async function fetchPatientInterfaces(setData, setIsLoading) {
   try {
     const response = await axios.get(url+'getPatientInterfaces');
-    const data = response.data.map(item => ({ label: item.interface, value: item.id }));
+    const data = response.data.map(item => ({ label: item.interface, value: item.interface }));
     setData(data);
     setIsLoading(false);
     console.log("in fetch data");
@@ -195,6 +199,42 @@ export async function fetchPatientInterfaces(setData, setIsLoading) {
   }
 }
 
+export async function fetchHumidificationOptions(setData, setIsLoadingOptions) {
+  try {
+    const response = await axios.get(url+'humidification-options');
+    const data = response.data.map(item => ({ label: item.humidOption, value: item.humidOption }));
+    setData(data);
+    setIsLoadingOptions(false);
+    console.log("in fetch data");
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching data', error);
+    setIsLoadingOptions(false);
+  }
+}
+
+
+export async function submitPatientData(patientData) {
+  try {
+    // Submit patient data to the server
+    await axios.post(url + 'submitPatient', patientData);
+    console.log('Patient data submitted successfully');
+    // Navigate to the welcome page
+    // ...
+  } catch (error) {
+    console.error('Error submitting patient data:', error);
+    // Handle error (e.g., show an error message)
+  }
+}
+
+export async function addHospitalData(data) {
+  try {
+    const response = await axios.post(url+'add-hospital-data', data);
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error adding hospital data', error);
+  }
+}
 
 
 
