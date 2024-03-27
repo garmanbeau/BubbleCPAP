@@ -1,5 +1,5 @@
 CREATE TABLE Patients (
-    PatientID INT PRIMARY KEY,
+    PatientID INT AUTO_INCREMENT PRIMARY KEY,
     AssignedSexAtBirth VARCHAR(15),
     Diagnosis VARCHAR(255),
     AgeYears INT,
@@ -14,27 +14,38 @@ CREATE TABLE Patients (
     PrimarySourceOfOxygen VARCHAR(255),
     PatientInterface VARCHAR(255),
     MethodOfOxygenBlending VARCHAR(255),
-    MethodOfHumidification VARCHAR(255)
+    MethodOfHumidification VARCHAR(255),
+    Hospital_Id INT, 
+    FOREIGN KEY (Hospital_Id) REFERENCES Hospitals(id)
 );
 
+CREATE TABLE Patient_Outcome (
+    patient_id INT,
+    outcome VARCHAR(255),
+    PRIMARY KEY (patient_id, outcome),
+    FOREIGN KEY (patient_id) REFERENCES Patients(PatientID)
+);
 
+CREATE TABLE Patient_Complication (
+    patient_id INT,
+    complication VARCHAR(255),
+    PRIMARY KEY (patient_id, complication),
+    FOREIGN KEY (patient_id) REFERENCES Patients(PatientID)
+);
 
--- CREATE TABLE Patient_Outcome (
---     patient_id INT,
---     outcome_id INT,
---     PRIMARY KEY (patient_id, outcome_id),
---     FOREIGN KEY (patient_id) REFERENCES PatientData(id),
---     FOREIGN KEY (outcome_id) REFERENCES PatientOutcome(id)
--- );
+CREATE TABLE Patient_Start_Reasons (
+    patient_id INT,
+    startReasons VARCHAR(255),
+    PRIMARY KEY (patient_id, startReasons),
+    FOREIGN KEY (patient_id) REFERENCES Patients(PatientID)
+);
 
--- CREATE TABLE Patient_Complication (
---     patient_id INT,
---     complication_id INT,
---     PRIMARY KEY (patient_id, complication_id),
---     FOREIGN KEY (patient_id) REFERENCES PatientData(id),
---     FOREIGN KEY (complication_id) REFERENCES bCPAPComplications(id)
--- );
-
+CREATE TABLE Patient_Stop_Reasons (
+    patient_id INT,
+    stopReasons VARCHAR(255),
+    PRIMARY KEY (patient_id, stopReasons),
+    FOREIGN KEY (patient_id) REFERENCES Patients(PatientID)
+);
 -- CREATE TABLE PatientData (
 --     id INT AUTO_INCREMENT,
 --     hospArea_id INT,

@@ -111,6 +111,20 @@ CREATE TABLE Hospitals (
     country VARCHAR(255),
     city VARCHAR(255),
     name VARCHAR(255),
+    LastQuestionAsked date,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE HumidificationOptions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    humidOption VARCHAR(255) NOT NULL
+);
+
+INSERT INTO HumidificationOptions (humidOption)
+VALUES ('Passive HME (heat and moisture exchanger)'),
+       ('Bubble Humidifier - Non-heated'),
+       ('Heated Humidifier'),
+       ('None')
+       ;
+
 
