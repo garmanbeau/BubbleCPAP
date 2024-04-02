@@ -3,6 +3,7 @@ import {
   View,
   SafeAreaView,
   StyleSheet,
+  ImageBackground,
   TextInput,
   Button,
   Text,
@@ -48,7 +49,7 @@ const TextInputExample = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView>
+      <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
       <TextInput
         style={styles.input}
         onChangeText={(text) => {
@@ -126,14 +127,12 @@ const TextInputExample = ({ navigation }) => {
         </View>
       </View>
 
-      <View style={styles.submitButton}>
         <Button
           title="Next"
           onPress={() => navigation.navigate("PatientPage2", {patient})}
           // onPress={() => console.log(patient)}
         />
-      </View>
-    </SafeAreaView>
+      </ImageBackground>
   );
 };
 

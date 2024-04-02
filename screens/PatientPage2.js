@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity, 
   View,
+  ImageBackground,
 } from "react-native";
 import Slider from "@react-native-community/slider";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -145,7 +146,8 @@ const TextInputExample = ({ navigation }) => {
     return <Text>Loading </Text>; // Or some other placeholder
   }
   return (
-    <SafeAreaView>
+    <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
+    
       <TextInput
         style={styles.input}
         placeholder="Prior medical history of chronic disease"
@@ -377,7 +379,7 @@ const TextInputExample = ({ navigation }) => {
           // onPress={() => console.log(patient)}
 
       />
-    </SafeAreaView>
+    </ImageBackground>
   );
 };
 

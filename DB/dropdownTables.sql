@@ -5,7 +5,7 @@ CREATE TABLE HospAreas (
 );
 
 INSERT INTO HospAreas (name)
-VALUES ('PICU'), ('NICU'), ('CICU'), ('emergency department'), ('inpatient pediatric ward'), ('inpatient general ward (adults and kids)'), ('inpatient general ICU (adults and kids)'), ('Acute care unit (ACU)'), ('emergency pediatric unit (EPU)');
+VALUES ('PICU'), ('NICU'), ('CICU'), ('Emergency Department'), ('Inpatient Pediatric Ward'), ('Inpatient General Ward (Adults and Kids)'), ('Inpatient General ICU (Adults and Kids)'), ('Acute Care Unit (ACU)'), ('Emergency Pediatric Unit (EPU)');
 
 CREATE TABLE SexAtBirth (
     id INT AUTO_INCREMENT,
@@ -14,7 +14,7 @@ CREATE TABLE SexAtBirth (
 );
 
 INSERT INTO SexAtBirth (sex)
-VALUES ('male'), ('female'), ('other');
+VALUES ('Male'), ('Female'), ('Other');
 
 CREATE TABLE bCPAPType (
     id INT AUTO_INCREMENT,
@@ -23,7 +23,7 @@ CREATE TABLE bCPAPType (
 );
 
 INSERT INTO bCPAPType (type)
-VALUES ('industry'), ('homemade'), ('other'), ('unknown');
+VALUES ('Industry'), ('Homemade'), ('Other'), ('Unknown');
 
 CREATE TABLE OxygenSource (
     id INT AUTO_INCREMENT,
@@ -32,7 +32,7 @@ CREATE TABLE OxygenSource (
 );
 
 INSERT INTO OxygenSource (source)
-VALUES ('tank'), ('wall'), ('oxygen concentrator'), ('other');
+VALUES ('Tank'), ('Wall'), ('Oxygen Concentrator'), ('Other');
 
 CREATE TABLE PatientInterface (
     id INT AUTO_INCREMENT,
@@ -41,7 +41,7 @@ CREATE TABLE PatientInterface (
 );
 
 INSERT INTO PatientInterface (interface)
-VALUES ('nose/mouth mask'), ('nasal mask'), ('scuba/full face mask'), ('nasal prongs');
+VALUES ('Nose/Mouth Mask'), ('Nasal Mask'), ('Scuba/Full Face Mask'), ('Nasal Prongs');
 
 CREATE TABLE PatientOutcome (
     id INT AUTO_INCREMENT,
@@ -50,7 +50,7 @@ CREATE TABLE PatientOutcome (
 );
 
 INSERT INTO PatientOutcome (outcome)
-VALUES ('discharged home'), ('transferred to another hospital'), ('died'), ('intubated');
+VALUES ('Discharged Home'), ('Transferred to Another Hospital'), ('Died'), ('Intubated');
 
 CREATE TABLE bCPAPComplications (
     id INT AUTO_INCREMENT,
@@ -59,7 +59,7 @@ CREATE TABLE bCPAPComplications (
 );
 
 INSERT INTO bCPAPComplications (complication)
-VALUES ('nasal irritation'), ('nasal septal injury'), ('abdominal distension requiring decompression'), ('aspiration'), ('pneumothorax'), ('other');
+VALUES ('Nasal Irritation'), ('Nasal Septal Injury'), ('Abdominal Distension Requiring Decompression'), ('Aspiration'), ('Pneumothorax'), ('Other');
 
 CREATE TABLE NursePatientRatio (
     id INT AUTO_INCREMENT,
@@ -86,7 +86,7 @@ CREATE TABLE StartbCPAPReasons (
 );
 
 INSERT INTO StartbCPAPReasons (reason)
-VALUES ('Hypoxemia'), ('Increased work of breathing/tachypnea/dyspnea'), ('Respiratory failure'), ('Hypercarbia');
+VALUES ('Hypoxemia'), ('Increased Work of Breathing/Tachypnea/Dyspnea'), ('Respiratory Failure'), ('Hypercarbia');
 
 CREATE TABLE StopbCPAPReasons (
     id INT AUTO_INCREMENT,
@@ -95,7 +95,7 @@ CREATE TABLE StopbCPAPReasons (
 );
 
 INSERT INTO StopbCPAPReasons (reason)
-VALUES ('Improved oxygenation'), ('Improved work of breathing'), ('Improved ventilation'), ('Escalation to higher form of support (Bi-level, intubation)'), ('Withdrawal of therapy/End of life'), ('Parent request');
+VALUES ('Improved Oxygenation'), ('Improved Work of Breathing'), ('Improved Ventilation'), ('Escalation to Higher Form of Support (Bi-level, Intubation)'), ('Withdrawal of Therapy/End of Life'), ('Parent Request');
 
 CREATE TABLE O2BlendingOptions (
     id INT AUTO_INCREMENT,
@@ -104,7 +104,7 @@ CREATE TABLE O2BlendingOptions (
 );
 
 INSERT INTO O2BlendingOptions (blend)
-VALUES ('Venturi entrainment air-oxygen mixer'), ('Oxygen concentrator'), ('Air/oxygen Y-connection mix'), ('No blending');
+VALUES ('Venturi Entrainment Air-Oxygen Mixer'), ('Oxygen Concentrator'), ('Air/Oxygen Y-Connection Mix'), ('No Blending');
 
 CREATE TABLE Hospitals (
     id INT AUTO_INCREMENT,
@@ -121,7 +121,7 @@ CREATE TABLE HumidificationOptions (
 );
 
 INSERT INTO HumidificationOptions (humidOption)
-VALUES ('Passive HME (heat and moisture exchanger)'),
+VALUES ('Passive HME (Heat and Moisture Exchanger)'),
        ('Bubble Humidifier - Non-heated'),
        ('Heated Humidifier'),
        ('None')

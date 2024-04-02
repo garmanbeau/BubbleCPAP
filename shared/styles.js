@@ -88,6 +88,20 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 16,
   },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover', // or 'stretch'
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  backgroundImage2: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover', // or 'stretch'
+  }
 });
 
 export default styles;

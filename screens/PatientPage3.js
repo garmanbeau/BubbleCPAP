@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity, Text, Alert } from "react-native";
+import { View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity, Text, Alert, ImageBackground } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Font from 'expo-font';
@@ -152,7 +152,7 @@ const handleSubmit = async (patient) => {
 
   return (
     isFontLoaded && !isLoadingComplications && !isLoadingOutcomes && !isLoadingBlendingOptions && !isLoadingHumidificationOptions && !isLoadingInterfaceOptions?  (
-    <SafeAreaView>
+      <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
       <Dropdown
         style={[styles.input, isFocus && { borderColor: "blue" }]}
         placeholderStyle={styles.placeholderStyle}
@@ -298,7 +298,7 @@ const handleSubmit = async (patient) => {
       onPress={() => handleSubmit(patient)}
       disabled={isLoading}
     />
-    </SafeAreaView>) : <Text>Loading...</Text>
+    </ImageBackground>) : <Text>Loading...</Text>
   );
 };
 

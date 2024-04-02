@@ -1,5 +1,5 @@
 import React, { useState, useEffect }from 'react';
-import {Text, View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity, Alert} from 'react-native';
+import {Text, View, SafeAreaView, StyleSheet, TextInput, Button, TouchableOpacity, Alert, ImageBackground} from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Font from 'expo-font';
@@ -120,7 +120,8 @@ if (isHospitalsLoading && isRatiosLoading && !isFontLoaded) {
       emergency department, inpatient pediatric ward, inpatient general ward (adults and kids), 
       inpatient general ICU (adults and kids). Acute care unit (ACU), emergency pediatric unit (EPU) */
   return (
-    <SafeAreaView>
+    <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
+
       <TextInput
         style={styles.input}
         placeholder='# of bCPAP Units available at hostpital' //make numeric
@@ -223,7 +224,7 @@ if (isHospitalsLoading && isRatiosLoading && !isFontLoaded) {
       onPress={() => handleSubmit(hospital)}
       disabled={isLoading}
     />
-    </SafeAreaView>
+    </ImageBackground>
   );
 };
 
