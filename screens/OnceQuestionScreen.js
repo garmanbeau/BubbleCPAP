@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, TextInput, Button, ImageBackground} from 'react-native';
+import {SafeAreaView, ScrollView, TextInput, Button, ImageBackground} from 'react-native';
 import styles from '../shared/styles';
 import { addHospital } from '../shared/api';
 
@@ -10,6 +10,8 @@ const TextInputExample = ({navigation}) => {
   const [text3, onChangeText3] = React.useState('');
 
   return (
+    <SafeAreaView style={styles.container4}>
+    <ScrollView contentContainerStyle={styles.container4}>
     <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
 
       <TextInput
@@ -48,6 +50,8 @@ const TextInputExample = ({navigation}) => {
 />
 
     </ImageBackground>
+    </ScrollView>
+    </SafeAreaView>
   );
 };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   TextInput,
   Button,
@@ -146,6 +147,8 @@ const TextInputExample = ({ navigation }) => {
     return <Text>Loading </Text>; // Or some other placeholder
   }
   return (
+    <SafeAreaView style={styles.container4}>
+    <ScrollView contentContainerStyle={styles.container4}>
     <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
     
       <TextInput
@@ -380,6 +383,8 @@ const TextInputExample = ({ navigation }) => {
 
       />
     </ImageBackground>
+    </ScrollView>
+    </SafeAreaView>
   );
 };
 

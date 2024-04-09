@@ -7,6 +7,7 @@ import {
   TextInput,
   Button,
   Text,
+  ScrollView
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import styles from "../shared/styles";
@@ -49,7 +50,10 @@ const TextInputExample = ({ navigation }) => {
   }
 
   return (
+    <SafeAreaView style={styles.container4}>
+    <ScrollView contentContainerStyle={styles.container4}>
       <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
+      <View style={styles.container4}>
       <TextInput
         style={styles.input}
         onChangeText={(text) => {
@@ -126,13 +130,17 @@ const TextInputExample = ({ navigation }) => {
           />
         </View>
       </View>
-
-        <Button
+      <View style={styles.container4}>
+      <Button
           title="Next"
           onPress={() => navigation.navigate("PatientPage2", {patient})}
           // onPress={() => console.log(patient)}
         />
+      </View>
+      </View>
       </ImageBackground>
+    </ScrollView>
+    </SafeAreaView>
   );
 };
 

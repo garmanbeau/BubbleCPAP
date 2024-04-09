@@ -53,12 +53,8 @@ const styles = StyleSheet.create({
   },
   inputWrap: {
     flex: 1,
-    borderColor: "#cccccc",
-    borderBottomWidth: 1,
-    marginBottom: 10,
   },
   row: {
-    flex: 1,
     flexDirection: "row",
   },
   submitButton: {
@@ -101,6 +97,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover', // or 'stretch'
+  },
+  container4: {
+    flexGrow: 1,
   }
 });
 

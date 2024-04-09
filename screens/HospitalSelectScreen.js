@@ -20,7 +20,7 @@ import { StatusBar } from 'expo-status-bar';
 // });
 import { useRoute } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, Button, ImageBackground, ScrollView, SafeAreaView } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from '../shared/styles';
 import { fetchHospitals } from '../shared/api';
@@ -138,6 +138,8 @@ const DropdownComponent = ({ navigation }) => {
     return <Text>Loading </Text>; // Or some other placeholder
   }
   return (
+    <SafeAreaView style={styles.container4}>
+    <ScrollView contentContainerStyle={styles.container4}>
       <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
       {renderLabel()}
       <Dropdown
@@ -181,6 +183,8 @@ const DropdownComponent = ({ navigation }) => {
 
    
       </ImageBackground>
+    </ScrollView>
+    </SafeAreaView>
   );
 };
 
