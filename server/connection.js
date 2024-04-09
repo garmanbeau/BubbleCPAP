@@ -277,8 +277,8 @@ console.log(patientId);
     for (const complication of PatientComplications) {
       if (complication.value) {
         // Insert the row into the table (replace with your actual query)
-        const insertQuery = 'INSERT INTO Patient_Complication (patient_id, complication) VALUES (?, ?)';
-        await dbPromise.query(insertQuery, [patientId, complication.label]);
+        const insertQuery = 'INSERT INTO Patient_Complication (patient_id, complication, severity) VALUES (?, ?, ?)';
+        await dbPromise.query(insertQuery, [patientId, complication.label, complication.severity]);
       }
     }
 

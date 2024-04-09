@@ -46,6 +46,7 @@ const DropdownComponent = ({ navigation }) => {
   const route = useRoute();
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+  const [isDropdownSelected, setIsDropdownSelected] = useState(true);
   const [hospitalOptions, setHospitalOptions] = useState([]);
     const [isLoadingHospitals, setIsLoadingHospitals] = useState(true);
 
@@ -85,6 +86,10 @@ const DropdownComponent = ({ navigation }) => {
       units: [], 
     })
     const handlePress = () => {
+      if (!patient.Hospital_Id) {
+        setIsDropdownSelected(false);
+        return;
+      }
       const currentDate = new Date();
       const oneYearAgo = new Date();
       oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
@@ -142,8 +147,9 @@ const DropdownComponent = ({ navigation }) => {
     <ScrollView contentContainerStyle={styles.container4}>
       <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
       {renderLabel()}
+      {!isDropdownSelected && <Text style={{ color: 'red' }}>You must select an item</Text>}
       <Dropdown
-        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+        style={[styles.dropdown, {borderColor: isDropdownSelected ? 'gray' : 'red'}, isFocus && { borderColor: isDropdownSelected ? 'blue' : 'red' }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -163,6 +169,7 @@ const DropdownComponent = ({ navigation }) => {
           setHospital({...hospital, id: item.value, lastQuestionAsked: item.lastQuestionAsked});
           // console.log(hospital);
           // console.log(hospitalOptions);
+          setIsDropdownSelected(true);
           setIsFocus(false);
         }}
         // renderLeftIcon={() => (

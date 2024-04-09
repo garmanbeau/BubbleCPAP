@@ -29,6 +29,7 @@ CREATE TABLE Patient_Outcome (
 CREATE TABLE Patient_Complication (
     patient_id INT,
     complication VARCHAR(255),
+    severity INT,
     PRIMARY KEY (patient_id, complication),
     FOREIGN KEY (patient_id) REFERENCES Patients(PatientID)
 );

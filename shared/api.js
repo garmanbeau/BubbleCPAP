@@ -89,7 +89,7 @@ export async function fetchPatientOutcomes(setData, setIsLoadingOutcomes) {
 export async function fetchbCPAPComplications(setData, setIsLoadingComplications) {
   try {
     const response = await axios.get(url+'bcpap-complications');
-    const data = response.data.map(item => ({ label: item.complication, value: false }));
+    const data = response.data.map(item => ({ label: item.complication, value: false,  severity: null }));
     setData(data);
     setIsLoadingComplications(false);
     console.log("in fetch data");
