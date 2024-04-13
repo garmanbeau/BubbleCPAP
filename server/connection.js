@@ -58,6 +58,23 @@ app.get('/api/hosp-areas', (req, res) => {
   });
 });
 
+// Ping the database every 6 hours to keep the connection alive
+setInterval(() => {
+  db.query('SELECT 1', (err) => {
+    if (err) console.error('Error pinging database:', err);
+  });
+}, 6 * 60 * 60 * 1000);
+
+// Ping the promise-based database connection every 6 hours to keep it alive
+setInterval(async () => {
+  try {
+    await dbPromise.query('SELECT 1');
+  } catch (err) {
+    console.error('Error pinging promise-based database connection:', err);
+  }
+}, 6 * 60 * 60 * 1000);
+
+
 // Endpoint to get nurse patient ratios
 app.get('/api/nurse-patient-ratios', (req, res) => {
   db.query('SELECT * FROM NursePatientRatio', (err, results) => {
