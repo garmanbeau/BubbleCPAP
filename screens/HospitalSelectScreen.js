@@ -24,6 +24,7 @@ import { StyleSheet, Text, View, Button, ImageBackground, ScrollView, SafeAreaVi
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from '../shared/styles';
 import { fetchHospitals } from '../shared/api';
+import { useValidation } from '../shared/validation';
 
 //import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -44,12 +45,13 @@ import { fetchHospitals } from '../shared/api';
 
 const DropdownComponent = ({ navigation }) => {
   const route = useRoute();
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
   const [isDropdownSelected, setIsDropdownSelected] = useState(true);
   const [hospitalOptions, setHospitalOptions] = useState([]);
     const [isLoadingHospitals, setIsLoadingHospitals] = useState(true);
-
+const hospitalDropdownValidation = useValidation('', value => value !=='', isSubmitted);
     const [patient, setPatient] = useState({
       AssignedSexAtBirth: '',
       Diagnosis: '',
@@ -86,8 +88,9 @@ const DropdownComponent = ({ navigation }) => {
       units: [], 
     })
     const handlePress = () => {
+      setIsSubmitted(true);
+      hospitalDropdownValidation.validateNow();
       if (!patient.Hospital_Id) {
-        setIsDropdownSelected(false);
         return;
       }
       const currentDate = new Date();
@@ -147,9 +150,9 @@ const DropdownComponent = ({ navigation }) => {
     <ScrollView contentContainerStyle={styles.container4}>
       <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
       {renderLabel()}
-      {!isDropdownSelected && <Text style={{ color: 'red' }}>You must select an item</Text>}
+      {isSubmitted && !hospitalDropdownValidation.isValid && <Text style={{ color: 'red' }}>You must select an item</Text>}
       <Dropdown
-        style={[styles.dropdown, {borderColor: isDropdownSelected ? 'gray' : 'red'}, isFocus && { borderColor: isDropdownSelected ? 'blue' : 'red' }]}
+        style={[styles.dropdown, {borderColor: hospitalDropdownValidation.borderColor}]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -161,15 +164,19 @@ const DropdownComponent = ({ navigation }) => {
         valueField="value"
         placeholder={!isFocus ? 'Select item' : '...'}
         searchPlaceholder="Search..."
-        //value={value}
+        value={hospitalDropdownValidation.value}
         onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
+        onBlur={() => {
+          setIsFocus(false);
+          hospitalDropdownValidation.handleBlur();
+        }}
         onChange={item => {
           setPatient({...patient, Hospital_Id: item.value});
           setHospital({...hospital, id: item.value, lastQuestionAsked: item.lastQuestionAsked});
           // console.log(hospital);
           // console.log(hospitalOptions);
-          setIsDropdownSelected(true);
+          // setIsDropdownSelected(true);
+          hospitalDropdownValidation.handleChange(item.value);
           setIsFocus(false);
         }}
         // renderLeftIcon={() => (
