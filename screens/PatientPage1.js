@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import styles from "../shared/styles";
-import { fetchSexAtBirth } from "../shared/api";
+import { fetchSexAtBirth, fetchPatientAge, fetchPatientGestationalAge } from "../shared/api";
 import { useRoute } from "@react-navigation/native";
 
 const TextInputExample = ({ navigation }) => {
@@ -29,8 +29,12 @@ const TextInputExample = ({ navigation }) => {
   const [value, setValue] = useState("");
 
   const [sexAtBirth, setSexAtBirth] = useState([]); //TODO: change name to something that designates it a dropdown value
+  const [patientAgeOptions, setPatientAgeOptions] = useState([]);
+  const [patientGestAgeOptions, setPatientGestAgeOptions] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isAgeLoading, setAgeIsLoading] = useState(true);
+  const [isGestAgeLoading, setGestAgeIsLoading] = useState(true);
 
   const data = [
     { label: "Male", value: "Male" },
@@ -39,13 +43,15 @@ const TextInputExample = ({ navigation }) => {
   ];
   useEffect(() => {
     fetchSexAtBirth(setSexAtBirth, setIsLoading);
+    fetchPatientAge(setPatientAgeOptions,setAgeIsLoading)
+    fetchPatientGestationalAge(setPatientGestAgeOptions, setGestAgeIsLoading)
   }, []);
   // useEffect(() => {
   //   setPatient(route.params.patient);
   // }, [route.params.patient]);
   //might need this code to update if route.params.patient changes.
 
-  if (isLoading) {
+  if (isLoading || isAgeLoading || isGestAgeLoading) {
     return <Text>Loading </Text>; // Or some other placeholder
   }
 
@@ -94,42 +100,52 @@ const TextInputExample = ({ navigation }) => {
         // Render a textinput element if the condition is true
         <TextInput placeholder="Please specify" />
       )}
-      <View style={styles.row}>
-        <View style={styles.inputWrap}>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => {
-              setPatient({ ...patient, AgeYears: text });
-            }}
-            value={patient.AgeYears}
-            placeholder="Patient Year"
-            keyboardType="numeric"
-          />
-        </View>
 
-        <View style={styles.inputWrap}>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => {
-              setPatient({ ...patient, AgeMonths: text });
-            }}
-            value={patient.AgeMonths}
-            placeholder="Patient Month"
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={styles.inputWrap}>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => {
-              setPatient({ ...patient, AgeDays: text });
-            }}
-            value={patient.AgeDays}
-            placeholder="Patient Day"
-            keyboardType="numeric"
-          />
-        </View>
-      </View>
+      <Dropdown //make multi select drop down??
+        style={[styles.input, isFocus && { borderColor: "blue" }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={patientAgeOptions}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? "Select Patients Age" : "..."}
+        searchPlaceholder="Search..."
+        // value={value}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setPatient({...patient, Age: item.value});
+          console.log(item.value);
+          console.log(value);
+          setIsFocus(false);
+        }}
+      />
+
+<Dropdown //make multi select drop down??
+        style={[styles.input, isFocus && { borderColor: "blue" }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={patientGestAgeOptions}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? "Select Patients Gestational Age" : "..."}
+        searchPlaceholder="Search..."
+        // value={value}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={(item) => {
+          setPatient({...patient, GestAge: item.value});
+          console.log(item.value);
+          console.log(value);
+          setIsFocus(false);
+        }}
+      />
       <View style={styles.container4}>
       <Button
           title="Next"

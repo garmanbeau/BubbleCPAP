@@ -222,9 +222,10 @@ app.get('/api/humidification-options', (req, res) => {
 app.post('/api/submitPatient', async (req, res) => {
   try {
     // Insert patient data into Patients table
-    const { AssignedSexAtBirth, Diagnosis,AgeYears,
-      AgeMonths,
-      AgeDays,
+    const { AssignedSexAtBirth, 
+      Diagnosis,
+      Age, 
+      GestAge, 
       MedicalHistory,
       BubbleCPAPExpiratoryLimbSizeMM,
       BCPAPTypeDeviceUsed,
@@ -240,13 +241,12 @@ app.post('/api/submitPatient', async (req, res) => {
       StopBCPAPReasons,
       PatientOutcomes, 
       PatientComplications,} = req.body;
-    const insertPatientQuery = 'INSERT INTO Patients (AssignedSexAtBirth, Diagnosis, AgeYears, AgeMonths, AgeDays, MedicalHistory, BubbleCPAPExpiratoryLimbSizeMM, BCPAPTypeDeviceUsed, DurationOfBubbleCPAPUse, MinPressure, MaxPressure, PrimarySourceOfOxygen, PatientInterface, MethodOfOxygenBlending, MethodOfHumidification, Hospital_Id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const insertPatientQuery = 'INSERT INTO Patients (AssignedSexAtBirth, Diagnosis, Age, GestationalAge, MedicalHistory, BubbleCPAPExpiratoryLimbSizeMM, BCPAPTypeDeviceUsed, DurationOfBubbleCPAPUse, MinPressure, MaxPressure, PrimarySourceOfOxygen, PatientInterface, MethodOfOxygenBlending, MethodOfHumidification, Hospital_Id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
    const [patientResult] = await dbPromise.query(insertPatientQuery, [
       AssignedSexAtBirth,
       Diagnosis,
-      AgeYears,
-      AgeMonths,
-      AgeDays,
+      Age,
+      GestAge,
       MedicalHistory,
       BubbleCPAPExpiratoryLimbSizeMM,
       BCPAPTypeDeviceUsed,
@@ -332,6 +332,27 @@ app.post('/api/add-hospital-data', async (req, res) => {
     res.status(500).json({ error: 'Error adding hospital data' });
   }
 });
+
+// Endpoint to get patient age
+app.get('/api/patient-age', (req, res) => {
+  db.query('SELECT * FROM Patient_Age', (err, results) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+// Endpoint to get patient gestational age
+app.get('/api/patient-gestational-age', (req, res) => {
+  db.query('SELECT * FROM Patient_Gestational_Age', (err, results) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
 
 // Serve your application at the given port
 app.listen(port, () => {

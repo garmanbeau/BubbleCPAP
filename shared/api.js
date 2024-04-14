@@ -236,6 +236,33 @@ export async function addHospitalData(data) {
   }
 }
 
+export async function fetchPatientAge(setData, setIsLoading) {
+  try {
+    const response = await axios.get(url+'patient-age');
+    const data = response.data.map(item => ({ label: item.ageOption, value: item.ageOption }));
+    setData(data);
+    setIsLoading(false);
+    console.log("in fetch data");
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching data', error);
+    setIsLoading(false);
+  }
+}
+
+export async function fetchPatientGestationalAge(setData, setIsLoading) {
+  try {
+    const response = await axios.get(url+'patient-gestational-age');
+    const data = response.data.map(item => ({ label: item.gestAgeOption, value: item.gestAgeOption }));
+    setData(data);
+    setIsLoading(false);
+    console.log("in fetch data");
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching data', error);
+    setIsLoading(false);
+  }
+}
 
 
 

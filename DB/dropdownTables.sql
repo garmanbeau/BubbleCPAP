@@ -127,4 +127,18 @@ VALUES ('Passive HME (Heat and Moisture Exchanger)'),
        ('None')
        ;
 
+CREATE TABLE Patient_Age(
+    id int AUTO_INCREMENT PRIMARY KEY, 
+    ageOption VARCHAR(255) NOT NULL
+);
 
+INSERT INTO Patient_Age(ageOption)
+VALUES ('<1 month'), ('1-3 months'), ('4-6 months'), ('7-12 months'), ('12-36 months'), ('4-5 years'), ('5+ years');
+
+CREATE TABLE Patient_Gestational_Age(
+    id int AUTO_INCREMENT PRIMARY KEY, 
+    gestAgeOption VARCHAR(255) NOT NULL
+);
+
+INSERT INTO Patient_Gestational_Age(gestAgeOption)
+VALUES ('22-28 weeks gestation'),('29-32 weeks gestation'),('33-37 weeks gestation'), ('Not Premature or Unknown');

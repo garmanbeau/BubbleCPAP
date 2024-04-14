@@ -55,9 +55,8 @@ const hospitalDropdownValidation = useValidation('', value => value !=='', isSub
     const [patient, setPatient] = useState({
       AssignedSexAtBirth: '',
       Diagnosis: '',
-      AgeYears: null,
-      AgeMonths: null,
-      AgeDays: null,
+      AgeYears: '',
+      GestAge: '',
       MedicalHistory: '',
       BubbleCPAPExpiratoryLimbSizeMM: null,
       BCPAPTypeDeviceUsed: '',
