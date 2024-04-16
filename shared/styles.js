@@ -13,22 +13,30 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
+    borderColor: "black",
+    margin: 12,
+    borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
+    backgroundColor: "white",
   },
   icon: {
     marginRight: 5,
   },
   label: {
-    position: "absolute",
-    backgroundColor: "white",
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  error: {
+    color: 'red',
+    fontSize: 12,
+    alignSelf: 'left',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   placeholderStyle: {
     fontSize: 16,
@@ -46,14 +54,31 @@ const styles = StyleSheet.create({
   },
 
   input: {
+    flex: 1,
     height: 40,
     margin: 12,
+    marginTop: 5, 
     borderWidth: 1,
     padding: 10,
+    backgroundColor: 'white',
+  },
+  inputError: {
+    flex: 1,
+    height: 40,
+    margin: 12,
+    marginTop: 5, 
+    borderWidth: 1,
+    padding: 10,
+    backgroundColor: 'white',
+    borderColor: 'red',
   },
   inputWrap: {
     flex: 1,
   },
+  fieldContainer: {
+    flex: 1,
+  },
+  
   row: {
     flexDirection: "row",
   },
@@ -100,6 +125,11 @@ const styles = StyleSheet.create({
   },
   container4: {
     flexGrow: 1,
+  },
+  buttonEndContainer: {
+    flex: 1, 
+    justifyContent: 'flex-end',
+    marginBottom: 50,
   }
 });
 
