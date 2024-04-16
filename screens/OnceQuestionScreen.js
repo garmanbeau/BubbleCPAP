@@ -1,60 +1,133 @@
-import React from 'react';
-import {SafeAreaView, ScrollView, TextInput, Button, ImageBackground} from 'react-native';
-import styles from '../shared/styles';
-import { addHospital } from '../shared/api';
+import React, { useState} from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  TextInput,
+  Button,
+  ImageBackground,
+  Text,
+  View,
+  Platform,
+} from "react-native";
+import styles from "../shared/styles";
+import { KeyboardAvoidingView } from 'react-native';
+import { addHospital } from "../shared/api";
+import { useValidation } from "../shared/validation.js"; // Import your validation function
 
+const HospitalOneTimeQuestions = ({ navigation }) => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const cityValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+  const countryValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+  const nameValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
 
-const TextInputExample = ({navigation}) => {
-  const [text, onChangeText] = React.useState('');
-  const [text2, onChangeText2] = React.useState('');
-  const [text3, onChangeText3] = React.useState('');
+  const handleNextPress = () => {
+    setIsSubmitted(true);
+    cityValidation.validateNow();
+    countryValidation.validateNow();
+    nameValidation.validateNow();
+
+    if (
+      cityValidation.isValid &&
+      countryValidation.isValid &&
+      nameValidation.isValid
+    ) {
+      const hospital = {
+        city: cityValidation.value,
+        country: countryValidation.value,
+        name: nameValidation.value,
+      };
+      addHospital(hospital)
+        .then(() => {
+          navigation.navigate("HospitalSelect", { reload: Date.now() });
+        })
+        .catch((error) => {
+          console.error('Error adding hospital', error);
+        });
+    }
+  };
 
   return (
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{flex: 1}}>
     <SafeAreaView style={styles.container4}>
-    <ScrollView contentContainerStyle={styles.container4}>
-    <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
+    <ScrollView contentContainerStyle={{...styles.container4, flexGrow: 1}} >
+        <ImageBackground
+          source={require("../assets/Designer.png")}
+          style={styles.backgroundImage2}
+        >
+          
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Hospital City</Text>
+            <View style={styles.fieldContainer}>
+              {!cityValidation.isValid && isSubmitted && (
+                <Text style={styles.error}>Must fill item</Text>
+              )}
+              <TextInput
+                style={[
+                  styles.input,
+                  { borderColor: cityValidation.borderColor },
+                ]}
+                placeholder="Hospital City"
+                onChangeText={cityValidation.handleChange}
+                onBlur={cityValidation.handleBlur}
+                value={cityValidation.value}
+              />
+            </View>
+          </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder='Hospital City'
-        onChangeText={onChangeText}
-        value={text}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder='Hospital Country'
-        onChangeText={onChangeText2}
-        value={text2}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder='Hospital Name'
-        onChangeText={onChangeText3}
-        value={text3}
-      />
-      <Button title="Next"
-  onPress={() => {
-    const hospital = {
-      city: text,
-      country: text2,
-      name: text3
-    };
-    addHospital(hospital)
-      .then(() => {
-        navigation.navigate("HospitalSelect", { reload: Date.now() });
-      })
-      .catch((error) => {
-        console.error('Error adding hospital', error);
-      });
-  }}
-/>
-
-    </ImageBackground>
-    </ScrollView>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Hospital Country</Text>
+            <View style={styles.fieldContainer}>
+              {!countryValidation.isValid && isSubmitted && (
+                <Text style={styles.error}>Must fill item</Text>
+              )}
+              <TextInput
+                style={[
+                  styles.input,
+                  { borderColor: countryValidation.borderColor },
+                ]}
+                placeholder="Hospital Country"
+                onChangeText={countryValidation.handleChange}
+                onBlur={countryValidation.handleBlur}
+                value={countryValidation.value}
+              />
+            </View>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Hospital Name</Text>
+            <View style={styles.fieldContainer}>
+              {!nameValidation.isValid && isSubmitted && (
+                <Text style={styles.error}>Must fill item</Text>
+              )}
+              <TextInput
+                style={[
+                  styles.input,
+                  { borderColor: nameValidation.borderColor },
+                ]}
+                placeholder="Hospital Name"
+                onChangeText={nameValidation.handleChange}
+                onBlur={nameValidation.handleBlur}
+                value={nameValidation.value}
+              />
+            </View>
+          </View>
+          <Button style ={{bottom: 0}} title="Next" onPress={handleNextPress} />
+        </ImageBackground>
+      </ScrollView>
     </SafeAreaView>
+        </KeyboardAvoidingView>
   );
 };
 
-
-
-export default TextInputExample;
+export default HospitalOneTimeQuestions;
