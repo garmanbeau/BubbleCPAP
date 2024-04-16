@@ -2,30 +2,31 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   SafeAreaView,
-  StyleSheet,
   ImageBackground,
   TextInput,
   Button,
   Text,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import styles from "../shared/styles";
-import { fetchSexAtBirth, fetchPatientAge, fetchPatientGestationalAge } from "../shared/api";
+import {
+  fetchSexAtBirth,
+  fetchPatientAge,
+  fetchPatientGestationalAge,
+} from "../shared/api";
 import { useRoute } from "@react-navigation/native";
+import { useValidation } from "../shared/validation";
+import CustomProgressSteps from "../shared/CustomProgressSteps";
 
-const TextInputExample = ({ navigation }) => {
+const BasicPatientInfo = ({ navigation }) => {
   route = useRoute();
-
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [patient, setPatient] = useState(route.params.patient);
 
-  const [text, onChangeText] = React.useState("");
-  const [text2, onChangeText2] = React.useState("");
-  const [text3, onChangeText3] = React.useState("");
-  const [text4, onChangeText4] = React.useState("");
-  const [text5, onChangeText5] = React.useState("");
-
-  const [isFocus, setIsFocus] = useState(false);
+  const [isSexDropFocus, setIsSexDropFocus] = useState(false);
+  const [isAgeDropFocus, setIsAgeDropFocus] = useState(false);
+  const [isGestAgeDropFocus, setIsGestAgeDropFocus] = useState(false);
   const [value, setValue] = useState("");
 
   const [sexAtBirth, setSexAtBirth] = useState([]); //TODO: change name to something that designates it a dropdown value
@@ -36,20 +37,49 @@ const TextInputExample = ({ navigation }) => {
   const [isAgeLoading, setAgeIsLoading] = useState(true);
   const [isGestAgeLoading, setGestAgeIsLoading] = useState(true);
 
-  const data = [
-    { label: "Male", value: "Male" },
-    { label: "Female", value: "Female" },
-    { label: "Other", value: "Other" },
-  ];
+  const DiagnosisValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+  const PatientSexValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+  const PatientAgeValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+  const GestationalAgeValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+
+  const handleNext = (patient) => {
+    setIsSubmitted(true);
+    DiagnosisValidation.validateNow();
+    PatientAgeValidation.validateNow();
+    PatientSexValidation.validateNow();
+    GestationalAgeValidation.validateNow();
+
+    if (
+      DiagnosisValidation.isValid &&
+      PatientAgeValidation.isValid &&
+      PatientSexValidation.isValid &&
+      GestationalAgeValidation.isValid
+    ) {
+      navigation.navigate("PatientPage2", { patient });
+    }
+  };
+
   useEffect(() => {
     fetchSexAtBirth(setSexAtBirth, setIsLoading);
-    fetchPatientAge(setPatientAgeOptions,setAgeIsLoading)
-    fetchPatientGestationalAge(setPatientGestAgeOptions, setGestAgeIsLoading)
+    fetchPatientAge(setPatientAgeOptions, setAgeIsLoading);
+    fetchPatientGestationalAge(setPatientGestAgeOptions, setGestAgeIsLoading);
   }, []);
-  // useEffect(() => {
-  //   setPatient(route.params.patient);
-  // }, [route.params.patient]);
-  //might need this code to update if route.params.patient changes.
 
   if (isLoading || isAgeLoading || isGestAgeLoading) {
     return <Text>Loading </Text>; // Or some other placeholder
@@ -57,107 +87,153 @@ const TextInputExample = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container4}>
-    <ScrollView contentContainerStyle={styles.container4}>
-      <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
-      <View style={styles.container4}>
-      <TextInput
-        style={styles.input}
-        onChangeText={(text) => {
-          setPatient({ ...patient, Diagnosis: text });
-        }}
-        value={patient.Diagnosis}
-        placeholder="Diagnosis"
-      />
-      {/* <TextInput
-        style={styles.input} // change to Assigned sex at birth - male, female, other
-        onChangeText={onChangeText2}
-        value={text2}
-        placeholder="Patient Sex"
-      /> */}
-      <Dropdown //make multi select drop down??
-        style={[styles.input, isFocus && { borderColor: "blue" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={sexAtBirth}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? "Select Patients Sex Assigned at Birth" : "..."}
-        searchPlaceholder="Search..."
-        // value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          setPatient({...patient, AssignedSexAtBirth: item.value});
-          console.log(item.value);
-          console.log(value);
-          setIsFocus(false);
-        }}
-      />
-      {value.includes("other") && (
+      <ScrollView contentContainerStyle={styles.container4}>
+        <ImageBackground
+          source={require("../assets/Designer.png")}
+          style={styles.backgroundImage2}
+        >
+          <CustomProgressSteps activeStep={2}></CustomProgressSteps>
+          <View>
+            <Text style={styles.label}>Initial Diagnosis of Patient</Text>
+            <View style={styles.fieldContainer}>
+              {!DiagnosisValidation.isValid && isSubmitted && (
+                <Text style={styles.error}>Must fill item</Text>
+              )}
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    borderColor: DiagnosisValidation.borderColor,
+                  },
+                ]}
+                onChangeText={(text) => {
+                  setPatient({ ...patient, Diagnosis: text });
+                  DiagnosisValidation.handleChange(text);
+                }}
+                value={patient.Diagnosis}
+                placeholder="Diagnosis"
+              />
+            </View>
+          </View>
+
+          <Text style={styles.label}>Patient's Sex Assigned at Birth</Text>
+          {isSubmitted && !PatientSexValidation.isValid && (
+            <Text style={{ color: "red" }}>You must select an item</Text>
+          )}
+          <Dropdown
+            style={[
+              styles.dropdown,
+              { borderColor: PatientSexValidation.borderColor },
+            ]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={sexAtBirth}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={
+              !isSexDropFocus ? "Select Patient's Sex Assigned at Birth" : "..."
+            }
+            searchPlaceholder="Search..."
+            value={PatientSexValidation.value}
+            onFocus={() => setIsSexDropFocus(true)}
+            onBlur={() => {
+              setIsSexDropFocus(false);
+              PatientSexValidation.handleBlur();
+            }}
+            onChange={(item) => {
+              setPatient({ ...patient, AssignedSexAtBirth: item.value });
+              PatientSexValidation.handleChange(item.value);
+              console.log(item.value);
+              console.log(value);
+              setIsSexDropFocus(false);
+            }}
+          />
+          {/* {value.includes("other") && (
         // Render a textinput element if the condition is true
         <TextInput placeholder="Please specify" />
-      )}
+      )} */}
 
-      <Dropdown //make multi select drop down??
-        style={[styles.input, isFocus && { borderColor: "blue" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={patientAgeOptions}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? "Select Patients Age" : "..."}
-        searchPlaceholder="Search..."
-        // value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          setPatient({...patient, Age: item.value});
-          console.log(item.value);
-          console.log(value);
-          setIsFocus(false);
-        }}
-      />
+          <Text style={styles.label}>Patient's Age Range</Text>
+          {isSubmitted && !PatientAgeValidation.isValid && (
+            <Text style={{ color: "red" }}>You must select an item</Text>
+          )}
+          <Dropdown
+            style={[
+              styles.dropdown,
+              { borderColor: PatientAgeValidation.borderColor },
+            ]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={patientAgeOptions}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!isAgeDropFocus ? "Select Patient's Age" : "..."}
+            searchPlaceholder="Search..."
+            value={PatientAgeValidation.value}
+            onFocus={() => setIsAgeDropFocus(true)}
+            onBlur={() => {
+              setIsAgeDropFocus(false);
+              PatientAgeValidation.handleBlur();
+            }}
+            onChange={(item) => {
+              setPatient({ ...patient, Age: item.value });
+              PatientAgeValidation.handleChange(item.value);
+              console.log(item.value);
+              console.log(value);
+              setIsAgeDropFocus(false);
+            }}
+          />
 
-<Dropdown //make multi select drop down??
-        style={[styles.input, isFocus && { borderColor: "blue" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={patientGestAgeOptions}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? "Select Patients Gestational Age" : "..."}
-        searchPlaceholder="Search..."
-        // value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          setPatient({...patient, GestAge: item.value});
-          console.log(item.value);
-          console.log(value);
-          setIsFocus(false);
-        }}
-      />
-      <View style={styles.container4}>
-      <Button
-          title="Next"
-          onPress={() => navigation.navigate("PatientPage2", {patient})}
-          // onPress={() => console.log(patient)}
-        />
-      </View>
-      </View>
-      </ImageBackground>
-    </ScrollView>
+          <Text style={styles.label}>
+            Patient's Gestational Age (Premature?)
+          </Text>
+          {isSubmitted && !GestationalAgeValidation.isValid && (
+            <Text style={{ color: "red" }}>You must select an item</Text>
+          )}
+          <Dropdown
+            style={[
+              styles.dropdown,
+              { borderColor: GestationalAgeValidation.borderColor },
+            ]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={patientGestAgeOptions}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={
+              !isGestAgeDropFocus ? "Select Patient's Gestational Age" : "..."
+            }
+            searchPlaceholder="Search..."
+            // value={value}
+            onFocus={() => setIsGestAgeDropFocus(true)}
+            onBlur={() => {
+              setIsGestAgeDropFocus(false);
+              GestationalAgeValidation.handleBlur();
+            }}
+            onChange={(item) => {
+              setPatient({ ...patient, GestAge: item.value });
+              GestationalAgeValidation.handleChange(item.value);
+              console.log(item.value);
+              console.log(value);
+              setIsGestAgeDropFocus(false);
+            }}
+          />
+          <View style={styles.buttonEndContainer}>
+            <Button title="Next" onPress={() => handleNext(patient)} />
+          </View>
+        </ImageBackground>
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default TextInputExample;
+export default BasicPatientInfo;

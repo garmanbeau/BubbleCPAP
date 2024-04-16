@@ -25,17 +25,18 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 10,
+    fontWeight: "bold",
+    marginRight: 12,
+    marginLeft: 12,
   },
   error: {
-    color: 'red',
+    color: "red",
     fontSize: 12,
-    alignSelf: 'left',
+    alignSelf: "left",
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   placeholderStyle: {
@@ -57,20 +58,20 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     margin: 12,
-    marginTop: 5, 
+    marginTop: 5,
     borderWidth: 1,
     padding: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   inputError: {
     flex: 1,
     height: 40,
     margin: 12,
-    marginTop: 5, 
+    marginTop: 5,
     borderWidth: 1,
     padding: 10,
-    backgroundColor: 'white',
-    borderColor: 'red',
+    backgroundColor: "white",
+    borderColor: "red",
   },
   inputWrap: {
     flex: 1,
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
   fieldContainer: {
     flex: 1,
   },
-  
+
   row: {
     flexDirection: "row",
   },
@@ -111,26 +112,26 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover', // or 'stretch'
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover", // or 'stretch'
     alignItems: "center",
     justifyContent: "center",
   },
   backgroundImage2: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover', // or 'stretch'
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover", // or 'stretch'
   },
   container4: {
     flexGrow: 1,
   },
   buttonEndContainer: {
-    flex: 1, 
-    justifyContent: 'flex-end',
+    flex: 1,
+    justifyContent: "flex-end",
     marginBottom: 50,
-  }
+  },
 });
 
 export default styles;

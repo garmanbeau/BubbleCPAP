@@ -4,11 +4,9 @@ import {
   Button,
   Text,
   ImageBackground,
-  View
 } from "react-native";
 import React from "react";
 import styles from "../shared/styles";
-import CustomProgressSteps from "../shared/CustomProgressSteps";
 
 export default function WelcomeScreen({ navigation }) {
   return (
@@ -18,15 +16,13 @@ export default function WelcomeScreen({ navigation }) {
           source={require("../assets/Designer.png")}
           style={styles.backgroundImage}
         >
-          <Text
-            style={{ fontSize: 30, textAlign: "center" }}
-          >
-            Welcome to the BcPAP App!
+          <Text style={{ fontSize: 30, color: "green", textAlign: "center" }}>
+            Submission Successful! Press the button to go back to the main page.
           </Text>
 
           <Button
-            title="Record Information"
-            onPress={() => navigation.navigate("HospitalSelect")}
+            title="To Main Page"
+            onPress={() => navigation.navigate("Welcome")}
           />
         </ImageBackground>
       </ScrollView>

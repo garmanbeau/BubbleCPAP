@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -11,6 +11,7 @@ import {
 import styles from "../shared/styles";
 import { addHospital } from "../shared/api";
 import { useValidation } from "../shared/validation.js"; // Import your validation function
+import CustomProgressSteps from "../shared/CustomProgressSteps.js";
 
 const HospitalOneTimeQuestions = ({ navigation }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -51,19 +52,18 @@ const HospitalOneTimeQuestions = ({ navigation }) => {
           navigation.navigate("HospitalSelect", { reload: Date.now() });
         })
         .catch((error) => {
-          console.error('Error adding hospital', error);
+          console.error("Error adding hospital", error);
         });
     }
   };
 
   return (
     <SafeAreaView style={styles.container4}>
-    <ScrollView contentContainerStyle={{...styles.container4, flexGrow: 1}} >
+      <ScrollView contentContainerStyle={{ ...styles.container4, flexGrow: 1 }}>
         <ImageBackground
           source={require("../assets/Designer.png")}
           style={styles.backgroundImage2}
         >
-          
           <View>
             <Text style={styles.label}>Hospital City</Text>
             <View style={styles.fieldContainer}>
@@ -120,11 +120,8 @@ const HospitalOneTimeQuestions = ({ navigation }) => {
             </View>
           </View>
           <View style={styles.buttonEndContainer}>
-    <Button
-      title="Next"
-      onPress={handleNextPress}
-    />
-  </View>
+            <Button title="Next" onPress={handleNextPress} />
+          </View>
         </ImageBackground>
       </ScrollView>
     </SafeAreaView>

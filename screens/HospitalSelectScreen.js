@@ -13,8 +13,9 @@ import { Dropdown } from "react-native-element-dropdown";
 import styles from "../shared/styles";
 import { fetchHospitals } from "../shared/api";
 import { useValidation } from "../shared/validation";
+import CustomProgressSteps from "../shared/CustomProgressSteps";
 
-const DropdownComponent = ({ navigation }) => {
+const HospitalSelect = ({ navigation }) => {
   const route = useRoute();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isFocus, setIsFocus] = useState(false);
@@ -28,7 +29,7 @@ const DropdownComponent = ({ navigation }) => {
   const [patient, setPatient] = useState({
     AssignedSexAtBirth: "",
     Diagnosis: "",
-    AgeYears: "",
+    Age: "",
     GestAge: "",
     MedicalHistory: "",
     BubbleCPAPExpiratoryLimbSizeMM: null,
@@ -122,12 +123,8 @@ const DropdownComponent = ({ navigation }) => {
           source={require("../assets/Designer.png")}
           style={styles.backgroundImage2}
         >
-          <View
-            style={{
-              ...StyleSheet.absoluteFill,
-              backgroundColor: "rgba(0,0,0,0)",
-            }}
-          />
+          <CustomProgressSteps activeStep={0}>
+          </CustomProgressSteps>
           {isSubmitted && !hospitalDropdownValidation.isValid && (
             <Text style={{ color: "red" }}>You must select an item</Text>
           )}
@@ -180,4 +177,4 @@ const DropdownComponent = ({ navigation }) => {
   );
 };
 
-export default DropdownComponent;
+export default HospitalSelect;

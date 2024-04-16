@@ -2,133 +2,210 @@ import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   ScrollView,
-  StyleSheet,
   TextInput,
   Button,
   Text,
-  TouchableOpacity, 
+  TouchableOpacity,
   View,
   ImageBackground,
 } from "react-native";
 import Slider from "@react-native-community/slider";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Dropdown } from "react-native-element-dropdown";
-import styles from '../shared/styles';
-import { fetchOxygenSources, fetchStartbCPAPReasons, fetchStopbCPAPReasons, fetchbCPAPTypes, fetchbCPAPUseLengths } from "../shared/api";
-import * as Font from 'expo-font';
-import { FontAwesome5 } from '@expo/vector-icons';
+import styles from "../shared/styles";
+import {
+  fetchOxygenSources,
+  fetchStartbCPAPReasons,
+  fetchStopbCPAPReasons,
+  fetchbCPAPTypes,
+  fetchbCPAPUseLengths,
+} from "../shared/api";
+import * as Font from "expo-font";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
-
-const TextInputExample = ({ navigation }) => {
+import { useValidation } from "../shared/validation";
+import CustomProgressSteps from "../shared/CustomProgressSteps";
+const PatientTreatmentInfo = ({ navigation }) => {
   route = useRoute();
 
   const [patient, setPatient] = useState(route.params.patient);
 
-
-  const [text, onChangeText] = React.useState("");
-  const [text2, onChangeText2] = React.useState("");
-  const [text3, onChangeText3] = React.useState("");
-  const [text4, onChangeText4] = React.useState("");
-  
   const [isTextInputVisible, setTextInputVisibility] = useState(false);
   const [isTextInputVisible2, setTextInputVisibility2] = useState(false);
 
-  const [isFocus, setIsFocus] = useState(false); //TODO: define different isfocus vars
+  const [isDeviceFocus, setIsDeviceFocus] = useState(false); //TODO: define different isfocus vars
+  const [isDurationFocus, setIsDurationFocus] = useState(false); //TODO: define different isfocus vars
+  const [isOxygenFocus, setIsOxygenFocus] = useState(false); //TODO: define different isfocus vars
+
   const [isFontLoaded, setFontLoaded] = useState(false);
-  const [minPressureValue, setMinPressureValue] = useState(null);
-  const [maxPressureValue, setMaxPressureValue] = useState(null);
-  const [oxygenSource, setOxygenSource] = useState('');
-  const [bcpapUseLength, setBcpapUseLength] = useState(null);
-  const [bcpapDeviceType, setBcpapDeviceType] = useState(null);
-  const [startbCPAPReason, setStartbCPAPReason] = useState(null);
-  const [stopbCPAPReason, setStopbCPAPReason] = useState(null);
+  const [minPressureValue, setMinPressureValue] = useState(0);
+  const [maxPressureValue, setMaxPressureValue] = useState(0);
 
-
-  
   const [oxygenSourceOptions, setOxygenSourceOptions] = useState([]);
   const [bcpapUseLengthOptions, setBcpapUseLengthOptions] = useState([]);
   const [bcpapDeviceTypeOptions, setBcpapDeviceTypeOptions] = useState([]);
   const [startbCPAPReasonOptions, setStartbCPAPReasonOptions] = useState([]);
   const [stopbCPAPReasonOptions, setStopbCPAPReasonOptions] = useState([]);
-  
+
   const [isLoadingStartReasons, setIsLoadingStartReasons] = useState(true);
   const [isLoadingStopReasons, setIsLoadingStopReasons] = useState(true);
   const [isBcpapTypesLoading, setIsBcpapTypesLoading] = useState(true);
   const [isOxygenLoading, setIsOxygenLoading] = useState(true);
   const [isLengthsLoading, setIsLengthsLoading] = useState(true);
 
-  const data = [
-    { label: "Tank/Cylinder", value: "Tank/Cylinder" },
-    { label: "Wall", value: "Wall" },
-    { label: "Oxygen Concentrator", value: "Oxygen Concentrator" },
-    { label: "Other", value: "Other" },
-  ];
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showStartbCPAPReasonError, setShowStartbCPAPReasonError] =
+    useState(false);
+  const [showStopbCPAPReasonError, setShowStopbCPAPReasonError] =
+    useState(false);
 
-  const dayData = [
-    { label: "<1 day", value: "<1 day" },
-    { label: "1-3 days", value: "1-3 days" },
-    { label: "3-7 days", value: "3-7 days" },
-    { label: ">7 days", value: ">7 days" },
-  ];
-//industry/commerical, homemade/who-style/ constructed, other, unknown
-  const deviceData = [
-    {label: "industry/commerical", value:"industry/commerical"},
-    {label: "homemade/who-style/ constructed", value:"homemade/who-style/ constructed"},
-    {label: "other", value:"other"},
-    {label: "unknown", value:"unknown"},
-  ];
-  // <1 day
-  //         1-3days
-  //         3-7days
-  //         >7days
+  const [pressureError, setPressureError] = useState(false);
 
-  const renderBouncyCheckboxes = (array) => {
+  const HistoryValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+
+  const LimbSizeValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+
+  const DeviceValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+
+  const DurationValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+
+  const OxygenValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+
+  const validatePressures = () => {
+    if (maxPressureValue < minPressureValue) {
+      setPressureError(true);
+    } else {
+      setPressureError(false);
+    }
+  };
+
+  const renderBouncyCheckboxes = (array, checkboxType) => {
+    // Define your error states
+
     return array.map((item, index) => {
+      // Determine which error state to use
+      const showError =
+        checkboxType === "start"
+          ? showStartbCPAPReasonError
+          : showStopbCPAPReasonError;
+      const setShowError =
+        checkboxType === "start"
+          ? setShowStartbCPAPReasonError
+          : setShowStopbCPAPReasonError;
+
       return (
         <BouncyCheckbox
           key={index}
+          style={showError ? styles.inputError : styles.input} // Use a different style when showError is true
           text={item.label}
           isChecked={item.value}
-          textStyle={{ textDecorationLine: 'none' }}
+          textStyle={{ textDecorationLine: "none" }}
           onPress={(isChecked) => {
             // Update the value of the item in the array
             const newItems = [...array];
             newItems[index].value = isChecked;
 
-            if ( array == startbCPAPReasonOptions){
-              //setStartbCPAPReason(newItems);
+            if (checkboxType === "start") {
               setPatient({ ...patient, StartBCPAPReasons: newItems });
-            } else if ( array == stopbCPAPReasonOptions){
-              // setStopbCPAPReason(newItems);
+            } else if (checkboxType === "stop") {
               setPatient({ ...patient, StopBCPAPReasons: newItems });
             }
+
+            // Check if any checkboxes are checked
+            const anyChecked = newItems.some((item) => item.value);
+            setShowError(!anyChecked);
           }}
         />
       );
     });
   };
+
+  const handleNext = (patient) => {
+    setIsSubmitted(true);
+    validatePressures();
+    DeviceValidation.validateNow();
+    OxygenValidation.validateNow();
+    HistoryValidation.validateNow();
+    LimbSizeValidation.validateNow();
+    DurationValidation.validateNow();
+
+    if (
+      (patient.StartBCPAPReasons && patient.StartBCPAPReasons.length === 0) ||
+      showStartbCPAPReasonError
+    ) {
+      setShowStartbCPAPReasonError(true);
+      setTextInputVisibility(true);
+    }
+
+    if (
+      (patient.StopBCPAPReasons && patient.StopBCPAPReasons.length === 0) ||
+      showStopbCPAPReasonError
+    ) {
+      setShowStopbCPAPReasonError(true);
+      setTextInputVisibility2(true);
+    }
+    console.log(pressureError);
+    if (
+      DeviceValidation.isValid &&
+      OxygenValidation.isValid &&
+      HistoryValidation.isValid &&
+      LimbSizeValidation.isValid &&
+      DurationValidation.isValid &&
+      !showStartbCPAPReasonError &&
+      !showStopbCPAPReasonError &&
+      !pressureError
+    ) {
+      navigation.navigate("PatientPage3", { patient });
+    }
+  };
   const startBCPAPView = () => {
-    return(
+    return (
       <View>
         <Text>Select all reasons that apply</Text>
-        <View>{renderBouncyCheckboxes(startbCPAPReasonOptions)}</View>
+        {showStartbCPAPReasonError && isSubmitted && (
+          <Text style={styles.error}>Must Select At Least One Item</Text>
+        )}
+        <View>{renderBouncyCheckboxes(startbCPAPReasonOptions, "start")}</View>
       </View>
-    )}
+    );
+  };
 
-    const stopBCPAPView = () => {
-      return(
-        <View>
-           <Text>Select all reasons that apply</Text>
-            <View>{renderBouncyCheckboxes(stopbCPAPReasonOptions)}</View>
-        </View>
-      )
-    }
+  const stopBCPAPView = () => {
+    return (
+      <View>
+        <Text>Select all reasons that apply</Text>
+        {showStopbCPAPReasonError && isSubmitted && (
+          <Text style={styles.error}>Must Select At Least One Item</Text>
+        )}
+        <View>{renderBouncyCheckboxes(stopbCPAPReasonOptions, "stop")}</View>
+      </View>
+    );
+  };
   useEffect(() => {
-
     const loadFont = async () => {
       // Use the Font.loadAsync method and pass the font name and the font file path as an object
       await Font.loadAsync({
-        'Font Awesome 5 Free': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf'),
+        "Font Awesome 5 Free": require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"),
       });
       // Update the state variable to true when the font is loaded
       setFontLoaded(true);
@@ -139,253 +216,286 @@ const TextInputExample = ({ navigation }) => {
     fetchbCPAPTypes(setBcpapDeviceTypeOptions, setIsBcpapTypesLoading);
     fetchOxygenSources(setOxygenSourceOptions, setIsOxygenLoading);
     fetchbCPAPUseLengths(setBcpapUseLengthOptions, setIsLengthsLoading);
-    fetchStartbCPAPReasons(setStartbCPAPReasonOptions, setIsLoadingStartReasons);
+    fetchStartbCPAPReasons(
+      setStartbCPAPReasonOptions,
+      setIsLoadingStartReasons
+    );
     fetchStopbCPAPReasons(setStopbCPAPReasonOptions, setIsLoadingStopReasons);
   }, []);
 
-  if (!isFontLoaded && (isBcpapTypesLoading || isOxygenLoading || isLengthsLoading ||isLoadingStartReasons || isLoadingStopReasons)) {
+  if (
+    !isFontLoaded &&
+    (isBcpapTypesLoading ||
+      isOxygenLoading ||
+      isLengthsLoading ||
+      isLoadingStartReasons ||
+      isLoadingStopReasons)
+  ) {
     return <Text>Loading </Text>; // Or some other placeholder
   }
   return (
     <SafeAreaView style={styles.container4}>
-    <ScrollView contentContainerStyle={styles.container4}>
-    <ImageBackground source={require('../assets/Designer.png')} style={styles.backgroundImage2}>
-    
-      <TextInput
-        style={styles.input}
-        placeholder="Prior medical history of chronic disease"
-        onChangeText={(text) => {
-          setPatient({ ...patient, MedicalHistory: text });
-        }}
-        value={patient.MedicalHistory}
-        
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Bubble CPAP expiratory limb size (measured in millimeters)" //( do we want to put tubing types instead? - standard oxygen tubing, corrugated tubing, or other?)
-        onChangeText={(text) => {
-          setPatient({ ...patient, BubbleCPAPExpiratoryLimbSizeMM: text });
-        }}
-        value={patient.BubbleCPAPExpiratoryLimbSizeMM}
-        keyboardType="numeric"
-        />
-         <Dropdown
-        style={[styles.input, isFocus && { borderColor: "blue" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={bcpapDeviceTypeOptions}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? "BCPAP device used" : "..."}
-        searchPlaceholder="Search..."
-        //value={bcpapUseLength}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          setPatient({ ...patient, BCPAPTypeDeviceUsed: item.value });
-          console.log(item.value);
-          setIsFocus(false);
-        }}
-      />
-      {/*
-      <Dropdown
-        style={[styles.input, isFocus && { borderColor: "blue" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={startbCPAPReasonOptions}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? "Reason for Bubble CPAP use" : "..."}
-        searchPlaceholder="Search..."
-        value={startbCPAPReason}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          setStartbCPAPReason(item.value);
-          console.log(item.value);
-          setIsFocus(false);
-        }}
-      /> */}
- <TouchableOpacity onPress={() => setTextInputVisibility(!isTextInputVisible)}>
-      <Text style ={styles.headerText}> Reasons to Start BCPAP {' '}
-          {isTextInputVisible ? (
-            // Use a right arrow icon from Font Awesome
-            <FontAwesome5 name="angle-down" size={24} color="black" />
-          ) : (
-            // Use a down arrow icon from Font Awesome
-            <FontAwesome5 name="angle-right" size={24} color="black" />
-          )}</Text>
-     </TouchableOpacity>
+      <ScrollView contentContainerStyle={styles.container4}>
+        <ImageBackground
+          source={require("../assets/Designer.png")}
+          style={styles.backgroundImage2}
+        >
+          <CustomProgressSteps activeStep={3}></CustomProgressSteps>
+          <View>
+            <Text style={styles.label}>
+              Prior Medical History of Chronic Disease
+            </Text>
+            <View style={styles.fieldContainer}>
+              {!HistoryValidation.isValid && isSubmitted && (
+                <Text style={styles.error}>Must fill item</Text>
+              )}
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    borderColor: HistoryValidation.borderColor,
+                  },
+                ]}
+                onChangeText={(text) => {
+                  setPatient({ ...patient, MedicalHistory: text });
+                  HistoryValidation.handleChange(text);
+                }}
+                value={patient.MedicalHistory}
+                placeholder="Prior medical history of chronic disease"
+              />
+            </View>
+          </View>
 
-        {isTextInputVisible && <View>{startBCPAPView()}</View>}
-{/* <Dropdown
-        style={[styles.input, isFocus && { borderColor: "blue" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={stopbCPAPReasonOptions}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? "Reason for Bubble CPAP discontinuation" : "..."}
-        searchPlaceholder="Search..."
-        value={stopbCPAPReason}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          setStopbCPAPReason(item.value);
-          console.log(item.value);
-          setIsFocus(false);
-        }}
-      /> */}
+          <View>
+            <Text style={styles.label}>
+              Bubble CPAP Expiratory Limb Size (in mm)
+            </Text>
+            <View style={styles.fieldContainer}>
+              {!LimbSizeValidation.isValid && isSubmitted && (
+                <Text style={styles.error}>Must fill item</Text>
+              )}
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    borderColor: LimbSizeValidation.borderColor,
+                  },
+                ]}
+                onChangeText={(text) => {
+                  setPatient({
+                    ...patient,
+                    BubbleCPAPExpiratoryLimbSizeMM: text,
+                  });
+                  LimbSizeValidation.handleChange(text);
+                }}
+                value={patient.BubbleCPAPExpiratoryLimbSizeMM}
+                placeholder="Bubble CPAP expiratory limb size (measured in millimeters)" //( do we want to put tubing types instead? - standard oxygen tubing, corrugated tubing, or other?)
+                keyboardType="numeric"
+              />
+            </View>
+          </View>
 
-        <TouchableOpacity onPress={() => setTextInputVisibility2(!isTextInputVisible2)}>
-      <Text style={styles.headerText}> Reasons to Stop BCPAP {' '}
-      {isTextInputVisible2 ? (
-            // Use a right arrow icon from Font Awesome
-            <FontAwesome5 name="angle-down" size={24} color="black" />
-          ) : (
-            // Use a down arrow icon from Font Awesome
-            <FontAwesome5 name="angle-right" size={24} color="black" />
-          )}</Text>
-     </TouchableOpacity>
-     {isTextInputVisible2 && <View>{stopBCPAPView()}</View>}
+          <Text style={styles.label}>BCPAP Device Type Used</Text>
+          {isSubmitted && !DeviceValidation.isValid && (
+            <Text style={{ color: "red" }}>You must select an item</Text>
+          )}
+          <Dropdown
+            style={[
+              styles.dropdown,
+              { borderColor: DeviceValidation.borderColor },
+            ]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={bcpapDeviceTypeOptions}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!isDeviceFocus ? "BCPAP device used" : "..."}
+            searchPlaceholder="Search..."
+            //value={bcpapUseLength}
+            onFocus={() => setIsDeviceFocus(true)}
+            onBlur={() => {
+              setIsDeviceFocus(false);
+              DeviceValidation.handleBlur();
+            }}
+            onChange={(item) => {
+              setPatient({ ...patient, BCPAPTypeDeviceUsed: item.value });
+              DeviceValidation.handleChange(item.value);
+              console.log(item.value);
+              setIsDeviceFocus(false);
+            }}
+          />
+          <TouchableOpacity
+            onPress={() => setTextInputVisibility(!isTextInputVisible)}
+          >
+            <Text style={styles.label}>
+              {" "}
+              Reasons to Start BCPAP{" "}
+              {isTextInputVisible ? (
+                // Use a right arrow icon from Font Awesome
+                <FontAwesome5 name="angle-down" size={24} color="black" />
+              ) : (
+                // Use a down arrow icon from Font Awesome
+                <FontAwesome5 name="angle-right" size={24} color="black" />
+              )}
+            </Text>
+          </TouchableOpacity>
 
-      {/* consider For how long used - wonder if we put some parameters or if we want the actual number of days?
-        <1 day
-        1-3days
-        3-7days
-        >7days
-        */}
-      {/* <TextInput
-        style={styles.input}
-        placeholder="Duration of Bubble CPAP use (hours, days)"
-        onChangeText={onChangeText5}
-        value={text5}
-      /> */}
+          {isTextInputVisible && <View>{startBCPAPView()}</View>}
 
-      <Dropdown
-        style={[styles.input, isFocus && { borderColor: "blue" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={bcpapUseLengthOptions}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? "Duration of Bubble CPAP use" : "..."}
-        searchPlaceholder="Search..."
-        //value={bcpapDeviceType}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          //setBcpapDeviceType(item.value);
-          setPatient({ ...patient, DurationOfBubbleCPAPUse: item.value });
-          console.log(item.value);
-          setIsFocus(false);
-        }}
-      />
+          <TouchableOpacity
+            onPress={() => setTextInputVisibility2(!isTextInputVisible2)}
+          >
+            <Text style={styles.label}>
+              {" "}
+              Reasons to Stop BCPAP{" "}
+              {isTextInputVisible2 ? (
+                // Use a right arrow icon from Font Awesome
+                <FontAwesome5 name="angle-down" size={24} color="black" />
+              ) : (
+                // Use a down arrow icon from Font Awesome
+                <FontAwesome5 name="angle-right" size={24} color="black" />
+              )}
+            </Text>
+          </TouchableOpacity>
+          {isTextInputVisible2 && <View>{stopBCPAPView()}</View>}
 
-      {/* <TextInput //(buttons would be the numbers 1 thorugh 10, and other/free text)
-        style={styles.input}
-        placeholder="Lowest Bubble CPAP pressure used"
-        onChangeText={onChangeText6}
-        value={text6}
-      /> */}
-      <Slider
-        style={{ width: 200, height: 40 }}
-        minimumValue={0}
-        maximumValue={10}
-        step={1}
-        value={minPressureValue}
-        // Update the state variable when the slider changes
-        onValueChange={(newValue) => {
-          setPatient({ ...patient, MinPressure: newValue });
-        }}
-        minimumTrackTintColor="#FFFFFF"
-        maximumTrackTintColor="#000000"
-      />
-      <Text>Minimum Pressure: {minPressureValue}</Text>
-      {/* <TextInput //(buttons would be the numbers 1 thorugh 10, and other/free text)
-        style={styles.input}
-        placeholder="Highest Bubble CPAP pressure used"
-        onChangeText={onChangeText7}
-        value={text7}
-      /> */}
-      <Slider
-        style={{ width: 200, height: 40 }}
-        minimumValue={0}
-        maximumValue={15}
-        step={1}
-        value={maxPressureValue}
-        // Update the state variable when the slider changes
-        onValueChange={(newValue) => {
-          setPatient({ ...patient, MaxPressure: newValue });
-        }}
-        minimumTrackTintColor="#FFFFFF"
-        maximumTrackTintColor="#000000"
-      />
-      <Text>Maximum Pressure: {maxPressureValue}</Text>
+          <Text style={styles.label}>Duration of BCPAP Use</Text>
+          {isSubmitted && !DurationValidation.isValid && (
+            <Text style={{ color: "red" }}>You must select an item</Text>
+          )}
 
-      {/* <TextInput
-        style={styles.input}
-        placeholder="Source of oxygen" //primary source of oxygen - tank/cylinder, wall, oxygen concentrator, other
-        onChangeText={onChangeText8}
-        value={text8}
-      /> */}
+          <Dropdown
+            style={[
+              styles.dropdown,
+              { borderColor: DurationValidation.borderColor },
+            ]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={bcpapUseLengthOptions}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={
+              !isDurationFocus ? "Duration of Bubble CPAP use" : "..."
+            }
+            searchPlaceholder="Search..."
+            //value={bcpapDeviceType}
+            onFocus={() => setIsDurationFocus(true)}
+            onBlur={() => {
+              setIsDurationFocus(false);
+              DurationValidation.handleBlur();
+            }}
+            onChange={(item) => {
+              //setBcpapDeviceType(item.value);
+              setPatient({ ...patient, DurationOfBubbleCPAPUse: item.value });
+              DurationValidation.handleChange(item.value);
+              console.log(item.value);
+              setIsDurationFocus(false);
+            }}
+          />
 
-      <Dropdown
-        style={[styles.input, isFocus && { borderColor: "blue" }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={oxygenSourceOptions}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? "Primary Source of Oxygen" : "..."}
-        searchPlaceholder="Search..."
-        value={oxygenSource}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          // setOxygenSource(item.value);
-          setPatient({ ...patient, PrimarySourceOfOxygen: item.value });
-          console.log(item.value);
-          setIsFocus(false);
-        }}
-      />
-      {/* TODO: Make some sort of workaround so this field doesn't automatically
+          <Text style={styles.label}>Minimum Pressure</Text>
+          <Text>Minimum Pressure: {minPressureValue}</Text>
+          {pressureError && isSubmitted && (
+            <Text style={styles.error}>
+              Minimum Pressure Must Be Less than Maximum Pressure
+            </Text>
+          )}
+          <Slider
+            style={{ width: "100%", height: 40 }}
+            minimumValue={0}
+            maximumValue={10}
+            step={1}
+            value={minPressureValue}
+            // Update the state variable when the slider changes
+            onValueChange={(newValue) => {
+              setPatient({ ...patient, MinPressure: newValue });
+              setMinPressureValue(newValue);
+              validatePressures();
+            }}
+            minimumTrackTintColor="#FFFFFF"
+            maximumTrackTintColor="#000000"
+          />
+
+          <Text style={styles.label}>Maximum Pressure</Text>
+          <Text>Maximum Pressure: {maxPressureValue}</Text>
+          {pressureError && isSubmitted && (
+            <Text style={styles.error}>
+              Minimum Pressure Must Be Less than Maximum Pressure
+            </Text>
+          )}
+          <Slider
+            style={{ width: "100%", height: 40 }}
+            minimumValue={0}
+            maximumValue={15}
+            step={1}
+            value={maxPressureValue}
+            // Update the state variable when the slider changes
+            onValueChange={(newValue) => {
+              setPatient({ ...patient, MaxPressure: newValue });
+              setMaxPressureValue(newValue);
+              validatePressures();
+            }}
+            minimumTrackTintColor="#FFFFFF"
+            maximumTrackTintColor="#000000"
+          />
+
+          <Text style={styles.label}>Primary Source of Oxygen</Text>
+          {isSubmitted && !OxygenValidation.isValid && (
+            <Text style={{ color: "red" }}>You must select an item</Text>
+          )}
+          <Dropdown
+            style={[
+              styles.dropdown,
+              { borderColor: OxygenValidation.borderColor },
+            ]}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={oxygenSourceOptions}
+            maxHeight={300}
+            labelField="label"
+            valueField="value"
+            placeholder={!isOxygenFocus ? "Primary Source of Oxygen" : "..."}
+            searchPlaceholder="Search..."
+            //value={oxygenSource}
+            onFocus={() => setIsOxygenFocus(true)}
+            onBlur={() => {
+              setIsOxygenFocus(false);
+              OxygenValidation.handleBlur();
+            }}
+            onChange={(item) => {
+              // setOxygenSource(item.value);
+              setPatient({ ...patient, PrimarySourceOfOxygen: item.value });
+              OxygenValidation.handleChange(item.value);
+              console.log(item.value);
+              setIsOxygenFocus(false);
+            }}
+          />
+
+          {/* TODO: Make some sort of workaround so this field doesn't automatically
       close when you type */}
-      {patient.PrimarySourceOfOxygen.includes('other') && (
-        // Render a textinput element if the condition is true
-        <TextInput placeholder="Please specify" 
-          onChangeText={ (text) => {
-            setPatient({ ...patient, PrimarySourceOfOxygen: text })
-          }}
-        />
-      )}
-      
+          {patient.PrimarySourceOfOxygen.includes("Other") && (
+            // Render a textinput element if the condition is true
+            <TextInput
+              placeholder="Please specify"
+              onChangeText={(text) => {
+                setPatient({ ...patient, PrimarySourceOfOxygen: text });
+              }}
+            />
+          )}
 
-      <Button
-        title="Next"
-        onPress={() => navigation.navigate("PatientPage3", {patient})}
-          // onPress={() => console.log(patient)}
-
-      />
-    </ImageBackground>
-    </ScrollView>
+          <Button title="Next" onPress={() => handleNext(patient)} />
+        </ImageBackground>
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default TextInputExample;
+export default PatientTreatmentInfo;

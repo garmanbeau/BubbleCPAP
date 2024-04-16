@@ -22,10 +22,11 @@ import {
   addHospitalData,
 } from "../shared/api";
 import { useValidation } from "../shared/validation";
+import CustomProgressSteps from "../shared/CustomProgressSteps";
 
 const YearlyQuestion = ({ navigation }) => {
   route = useRoute();
-  const [showCheckboxError, setShowCheckboxError] = useState(true);
+  const [showCheckboxError, setShowCheckboxError] = useState(false);
   const [patient, setPatient] = useState(route.params.patient);
   const [hospital, setHospital] = useState(route.params.hospital);
 
@@ -112,8 +113,8 @@ const YearlyQuestion = ({ navigation }) => {
     ChildrenOnBCPAPPerMonthValidation.validateNow();
     RespiratorySpecialistsAvailableValidation.validateNow();
     NurseToPatientRatioValidation.validateNow();
-    console.log(showCheckboxError);
-    if (showCheckboxError) {
+    if (hospital.units && hospital.units.length === 0) {
+      setShowCheckboxError(true);
       setTextInputVisibility(true);
     }
     if (
@@ -121,7 +122,8 @@ const YearlyQuestion = ({ navigation }) => {
       PediatricAdmissionsPerMonthValidation.isValid &&
       ChildrenOnBCPAPPerMonthValidation.isValid &&
       RespiratorySpecialistsAvailableValidation.isValid &&
-      NurseToPatientRatioValidation.isValid
+      NurseToPatientRatioValidation.isValid &&
+      !showCheckboxError
     ) {
       console.log(hospital);
       try {
@@ -170,6 +172,7 @@ const YearlyQuestion = ({ navigation }) => {
           source={require("../assets/Designer.png")}
           style={styles.backgroundImage2}
         >
+          <CustomProgressSteps activeStep={1}></CustomProgressSteps>
           <View>
             <Text style={styles.label}>
               Number of BCPAP Units Available at Hospital
@@ -300,7 +303,7 @@ const YearlyQuestion = ({ navigation }) => {
               />
             </View>
           </View>
-
+          <Text style={styles.label}>Usual Nurse to Patient Ratio</Text>
           {isSubmitted && !NurseToPatientRatioValidation.isValid && (
             <Text style={{ color: "red" }}>You must select an item</Text>
           )}
