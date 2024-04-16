@@ -7,10 +7,8 @@ import {
   ImageBackground,
   Text,
   View,
-  Platform,
 } from "react-native";
 import styles from "../shared/styles";
-import { KeyboardAvoidingView } from 'react-native';
 import { addHospital } from "../shared/api";
 import { useValidation } from "../shared/validation.js"; // Import your validation function
 
@@ -59,7 +57,6 @@ const HospitalOneTimeQuestions = ({ navigation }) => {
   };
 
   return (
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{flex: 1}}>
     <SafeAreaView style={styles.container4}>
     <ScrollView contentContainerStyle={{...styles.container4, flexGrow: 1}} >
         <ImageBackground
@@ -67,7 +64,7 @@ const HospitalOneTimeQuestions = ({ navigation }) => {
           style={styles.backgroundImage2}
         >
           
-          <View style={styles.inputContainer}>
+          <View>
             <Text style={styles.label}>Hospital City</Text>
             <View style={styles.fieldContainer}>
               {!cityValidation.isValid && isSubmitted && (
@@ -86,7 +83,7 @@ const HospitalOneTimeQuestions = ({ navigation }) => {
             </View>
           </View>
 
-          <View style={styles.inputContainer}>
+          <View>
             <Text style={styles.label}>Hospital Country</Text>
             <View style={styles.fieldContainer}>
               {!countryValidation.isValid && isSubmitted && (
@@ -104,7 +101,7 @@ const HospitalOneTimeQuestions = ({ navigation }) => {
               />
             </View>
           </View>
-          <View style={styles.inputContainer}>
+          <View>
             <Text style={styles.label}>Hospital Name</Text>
             <View style={styles.fieldContainer}>
               {!nameValidation.isValid && isSubmitted && (
@@ -122,11 +119,15 @@ const HospitalOneTimeQuestions = ({ navigation }) => {
               />
             </View>
           </View>
-          <Button style ={{bottom: 0}} title="Next" onPress={handleNextPress} />
+          <View style={styles.buttonEndContainer}>
+    <Button
+      title="Next"
+      onPress={handleNextPress}
+    />
+  </View>
         </ImageBackground>
       </ScrollView>
     </SafeAreaView>
-        </KeyboardAvoidingView>
   );
 };
 

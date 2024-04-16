@@ -20,7 +20,7 @@ export function useValidation(initialValue, validate, isSubmitted) {
   };
 
   const isValid = validate(value);
-  const borderColor = isTouched ? (isValid ? 'gray' : 'red') : 'gray';
+  const borderColor = isTouched ? (isValid ? 'black' : 'red') : 'black';
 
   return { value, handleChange, handleBlur, validateNow, borderColor, isValid };
 }
