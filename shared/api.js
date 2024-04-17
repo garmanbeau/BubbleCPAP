@@ -1,7 +1,7 @@
 import axios from 'axios';
-// url = "http://192.168.1.128:3000/api/";
+url = "http://192.168.1.128:3000/api/";
 // url = "http://10.101.1.39:3000/api/";
-url = "http://18.118.55.137:3000/api/";
+// url = "http://18.118.55.137:3000/api/";
 export async function fetchHospitalAreas(setData, setIsLoading) {
   try {
     const response = await axios.get(url+'hosp-areas');

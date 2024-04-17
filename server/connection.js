@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '', //your password here
+  password: 'sS3291sS', //your password here
   database: 'bubblecpap'
 });
 
@@ -39,7 +39,7 @@ async function connectToDatabase() {
   dbPromise = await mysqlPromise.createConnection({
     host: 'localhost',
   user: 'root',
-  password: '', //your password here
+  password: 'sS3291sS', //your password here
   database: 'bubblecpap'
   });
 }
