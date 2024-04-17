@@ -84,7 +84,7 @@ const PatientOutcomeInfo = ({ navigation }) => {
     BlendingValidation.validateNow();
     InterfaceValidation.validateNow();
     HumidificaitonValidation.validateNow();
-
+    let error = false;
     if (
       (patient.PatientComplications &&
         patient.PatientComplications.length === 0) ||
@@ -92,6 +92,7 @@ const PatientOutcomeInfo = ({ navigation }) => {
     ) {
       setShowComplicationError(true);
       setTextInputVisibility2(true);
+      error = true;
     }
     if (
       (patient.PatientOutcomes && patient.PatientOutcomes.length === 0) ||
@@ -99,12 +100,14 @@ const PatientOutcomeInfo = ({ navigation }) => {
     ) {
       setShowOutcomeError(true);
       setTextInputVisibility(true);
+      error = true;
     }
-
+    //TODO: add validation so that severity must be selected if a Complication is selected
     if (
       BlendingValidation.isValid &&
       InterfaceValidation.isValid &&
-      HumidificaitonValidation.isValid
+      HumidificaitonValidation.isValid &&
+      !error
     ) {
       try {
         await submitPatientData(patient);

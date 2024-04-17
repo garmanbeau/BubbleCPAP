@@ -23,6 +23,7 @@ const BasicPatientInfo = ({ navigation }) => {
   route = useRoute();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [patient, setPatient] = useState(route.params.patient);
+  const [isOtherSelected, setIsOtherSelected] = useState(false);
 
   const [isSexDropFocus, setIsSexDropFocus] = useState(false);
   const [isAgeDropFocus, setIsAgeDropFocus] = useState(false);
@@ -57,6 +58,11 @@ const BasicPatientInfo = ({ navigation }) => {
     (value) => value.trim() !== "",
     false
   );
+  const OtherValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
 
   const handleNext = (patient) => {
     setIsSubmitted(true);
@@ -64,12 +70,14 @@ const BasicPatientInfo = ({ navigation }) => {
     PatientAgeValidation.validateNow();
     PatientSexValidation.validateNow();
     GestationalAgeValidation.validateNow();
+    OtherValidation.validateNow();
 
     if (
       DiagnosisValidation.isValid &&
       PatientAgeValidation.isValid &&
       PatientSexValidation.isValid &&
-      GestationalAgeValidation.isValid
+      GestationalAgeValidation.isValid&&
+      (!isOtherSelected || (isOtherSelected && OtherValidation.isValid))
     ) {
       navigation.navigate("PatientPage2", { patient });
     }
@@ -146,15 +154,35 @@ const BasicPatientInfo = ({ navigation }) => {
             onChange={(item) => {
               setPatient({ ...patient, AssignedSexAtBirth: item.value });
               PatientSexValidation.handleChange(item.value);
+              setIsOtherSelected(item.value === "Other");
               console.log(item.value);
               console.log(value);
               setIsSexDropFocus(false);
             }}
           />
-          {/* {value.includes("other") && (
-        // Render a textinput element if the condition is true
-        <TextInput placeholder="Please specify" />
-      )} */}
+         {isOtherSelected && (
+  <View>
+  <Text style={styles.label}>Please Specify Sex</Text>
+  <View style={styles.fieldContainer}>
+    {!OtherValidation.isValid && isSubmitted && (
+      <Text style={styles.error}>Must fill item</Text>
+    )}
+    <TextInput
+      style={[
+        styles.input,
+        {
+          borderColor: OtherValidation.borderColor,
+        },
+      ]}
+      onChangeText={(text) => {
+        setPatient({ ...patient, AssignedSexAtBirth: text });
+        OtherValidation.handleChange(text);
+      }}
+      placeholder="Specify Sex"
+    />
+  </View>
+</View>
+)}
 
           <Text style={styles.label}>Patient's Age Range</Text>
           {isSubmitted && !PatientAgeValidation.isValid && (

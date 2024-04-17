@@ -37,6 +37,10 @@ const PatientTreatmentInfo = ({ navigation }) => {
   const [isDurationFocus, setIsDurationFocus] = useState(false); //TODO: define different isfocus vars
   const [isOxygenFocus, setIsOxygenFocus] = useState(false); //TODO: define different isfocus vars
 
+  const [isDeviceOtherSelected, setDeviceOtherSelected] = useState(false);
+  const [isOxygenOtherSelected, setOxygenOtherSelected] = useState(false);
+
+
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [minPressureValue, setMinPressureValue] = useState(0);
   const [maxPressureValue, setMaxPressureValue] = useState(0);
@@ -86,6 +90,17 @@ const PatientTreatmentInfo = ({ navigation }) => {
   );
 
   const OxygenValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+
+  const OtherDeviceValidation = useValidation(
+    "",
+    (value) => value.trim() !== "",
+    false
+  );
+  const OtherOxygenValidation = useValidation(
     "",
     (value) => value.trim() !== "",
     false
@@ -148,6 +163,8 @@ const PatientTreatmentInfo = ({ navigation }) => {
     HistoryValidation.validateNow();
     LimbSizeValidation.validateNow();
     DurationValidation.validateNow();
+    OtherDeviceValidation.validateNow();
+    OtherOxygenValidation.validateNow();
 
     if (
       (patient.StartBCPAPReasons && patient.StartBCPAPReasons.length === 0) ||
@@ -173,7 +190,9 @@ const PatientTreatmentInfo = ({ navigation }) => {
       DurationValidation.isValid &&
       !showStartbCPAPReasonError &&
       !showStopbCPAPReasonError &&
-      !pressureError
+      !pressureError&&
+      (!isDeviceOtherSelected || (isDeviceOtherSelected && OtherDeviceValidation.isValid)) &&
+      (!isOxygenOtherSelected || (isOxygenOtherSelected && OtherOxygenValidation.isValid))
     ) {
       navigation.navigate("PatientPage3", { patient });
     }
@@ -323,10 +342,34 @@ const PatientTreatmentInfo = ({ navigation }) => {
             onChange={(item) => {
               setPatient({ ...patient, BCPAPTypeDeviceUsed: item.value });
               DeviceValidation.handleChange(item.value);
+              setDeviceOtherSelected(item.value ==="Other");
               console.log(item.value);
               setIsDeviceFocus(false);
             }}
           />
+          {isDeviceOtherSelected && (
+  <View>
+  <Text style={styles.label}>Please Specify Device Type</Text>
+  <View style={styles.fieldContainer}>
+    {!OtherDeviceValidation.isValid && isSubmitted && (
+      <Text style={styles.error}>Must fill item</Text>
+    )}
+    <TextInput
+      style={[
+        styles.input,
+        {
+          borderColor: OtherDeviceValidation.borderColor,
+        },
+      ]}
+      onChangeText={(text) => {
+        setPatient({ ...patient, BCPAPTypeDeviceUsed: text });
+        OtherDeviceValidation.handleChange(text);
+      }}
+      placeholder="Specify DeviceType"
+    />
+  </View>
+</View>
+)}
           <TouchableOpacity
             onPress={() => setTextInputVisibility(!isTextInputVisible)}
           >
@@ -474,22 +517,35 @@ const PatientTreatmentInfo = ({ navigation }) => {
               // setOxygenSource(item.value);
               setPatient({ ...patient, PrimarySourceOfOxygen: item.value });
               OxygenValidation.handleChange(item.value);
+              setOxygenOtherSelected(item.value ==="Other");
               console.log(item.value);
               setIsOxygenFocus(false);
             }}
           />
 
-          {/* TODO: Make some sort of workaround so this field doesn't automatically
-      close when you type */}
-          {patient.PrimarySourceOfOxygen.includes("Other") && (
-            // Render a textinput element if the condition is true
-            <TextInput
-              placeholder="Please specify"
-              onChangeText={(text) => {
-                setPatient({ ...patient, PrimarySourceOfOxygen: text });
-              }}
-            />
-          )}
+{isOxygenOtherSelected && (
+  <View>
+  <Text style={styles.label}>Please Specify Source of Oxygen</Text>
+  <View style={styles.fieldContainer}>
+    {!OtherOxygenValidation.isValid && isSubmitted && (
+      <Text style={styles.error}>Must fill item</Text>
+    )}
+    <TextInput
+      style={[
+        styles.input,
+        {
+          borderColor: OtherOxygenValidation.borderColor,
+        },
+      ]}
+      onChangeText={(text) => {
+        setPatient({ ...patient, PrimarySourceOfOxygen: text });
+        OtherOxygenValidation.handleChange(text);
+      }}
+      placeholder="Specify Oxygen Source"
+    />
+  </View>
+</View>
+)}
 
           <Button title="Next" onPress={() => handleNext(patient)} />
         </ImageBackground>
