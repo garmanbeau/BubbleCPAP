@@ -128,7 +128,7 @@ const YearlyQuestion = ({ navigation }) => {
       console.log(hospital);
       try {
         await addHospitalData(hospital);
-        navigation.navigate("PatientPage1", { patient });
+        navigation.navigate("Basic Info", { patient });
       } catch (error) {
         setIsLoading(false);
         setButtonTitle("Next");

@@ -49,7 +49,7 @@ const HospitalOneTimeQuestions = ({ navigation }) => {
       };
       addHospital(hospital)
         .then(() => {
-          navigation.navigate("HospitalSelect", { reload: Date.now() });
+          navigation.navigate("Hospital Select", { reload: Date.now() });
         })
         .catch((error) => {
           console.error("Error adding hospital", error);

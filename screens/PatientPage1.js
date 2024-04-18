@@ -79,7 +79,7 @@ const BasicPatientInfo = ({ navigation }) => {
       GestationalAgeValidation.isValid&&
       (!isOtherSelected || (isOtherSelected && OtherValidation.isValid))
     ) {
-      navigation.navigate("PatientPage2", { patient });
+      navigation.navigate("Treatment Info", { patient });
     }
   };
 

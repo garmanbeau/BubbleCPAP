@@ -99,7 +99,7 @@ const HospitalSelect = ({ navigation }) => {
       });
     } else {
       // If it hasn't been a year
-      navigation.navigate("PatientPage1", { patient });
+      navigation.navigate("Basic Info", { patient });
       console.log("Hasnt been year" + hospital);
     }
   };
@@ -164,7 +164,7 @@ const HospitalSelect = ({ navigation }) => {
           />
           <Text
             style={{ color: "blue", marginTop: 20 }}
-            onPress={() => navigation.navigate("QuestionScreen")}
+            onPress={() => navigation.navigate("One Time Questions")}
           >
             Don't See your hostpital?{" "}
           </Text>

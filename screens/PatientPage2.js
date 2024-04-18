@@ -194,7 +194,7 @@ const PatientTreatmentInfo = ({ navigation }) => {
       (!isDeviceOtherSelected || (isDeviceOtherSelected && OtherDeviceValidation.isValid)) &&
       (!isOxygenOtherSelected || (isOxygenOtherSelected && OtherOxygenValidation.isValid))
     ) {
-      navigation.navigate("PatientPage3", { patient });
+      navigation.navigate("Outcome Info", { patient });
     }
   };
   const startBCPAPView = () => {

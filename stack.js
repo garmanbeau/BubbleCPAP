@@ -19,12 +19,12 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Search" component={SearchScreen} />
-        <Stack.Screen name="HospitalSelect" component={HostpitalSelectScreen} />
-        <Stack.Screen name="QuestionScreen" component={OnceQuestionScreen} />
+        <Stack.Screen name="Hospital Select" component={HostpitalSelectScreen} />
+        <Stack.Screen name="One Time Questions" component={OnceQuestionScreen} />
         <Stack.Screen name="Yearly Questions" component={YearlyQuestion} />
-        <Stack.Screen name="PatientPage1" component={PatientPage1} />
-        <Stack.Screen name="PatientPage2" component={PatientPage2} />
-        <Stack.Screen name="PatientPage3" component={PatientPage3} />
+        <Stack.Screen name="Basic Info" component={PatientPage1} />
+        <Stack.Screen name="Treatment Info" component={PatientPage2} />
+        <Stack.Screen name="Outcome Info" component={PatientPage3} />
         <Stack.Screen name="Results" component={ResultPage} />
         <Stack.Screen name="Success!" component={SubmissionSuccessPage} />
       </Stack.Navigator>

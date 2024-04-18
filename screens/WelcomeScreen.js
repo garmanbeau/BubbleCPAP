@@ -26,7 +26,7 @@ export default function WelcomeScreen({ navigation }) {
 
           <Button
             title="Record Information"
-            onPress={() => navigation.navigate("HospitalSelect")}
+            onPress={() => navigation.navigate("Hospital Select")}
           />
         </ImageBackground>
       </ScrollView>
