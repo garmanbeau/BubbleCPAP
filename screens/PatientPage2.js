@@ -25,6 +25,8 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { useValidation } from "../shared/validation";
 import CustomProgressSteps from "../shared/CustomProgressSteps";
+import Progress from "../Components/Progress";
+
 const PatientTreatmentInfo = ({ navigation }) => {
   route = useRoute();
 
@@ -254,6 +256,7 @@ const PatientTreatmentInfo = ({ navigation }) => {
   }
   return (
     <SafeAreaView style={styles.container4}>
+      <Progress completed1='outline' completed2='outline' completed3='outline'/>
       <ScrollView contentContainerStyle={styles.container4}>
         <ImageBackground
           source={require("../assets/Designer.png")}

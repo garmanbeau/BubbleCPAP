@@ -25,6 +25,7 @@ import {
 } from "../shared/api";
 import { useValidation } from "../shared/validation";
 import CustomProgressSteps from "../shared/CustomProgressSteps";
+import Progress from "../Components/Progress";
 
 const PatientOutcomeInfo = ({ navigation }) => {
   route = useRoute();
@@ -247,6 +248,7 @@ const PatientOutcomeInfo = ({ navigation }) => {
     !isLoadingHumidificationOptions &&
     !isLoadingInterfaceOptions ? (
     <SafeAreaView style={styles.container4}>
+      <Progress completed1='outline' completed2='outline' completed3='outline' completed4='outline'/>
       <ScrollView contentContainerStyle={styles.container4}>
         <ImageBackground
           source={require("../assets/Designer.png")}

@@ -18,6 +18,7 @@ import {
 import { useRoute } from "@react-navigation/native";
 import { useValidation } from "../shared/validation";
 import CustomProgressSteps from "../shared/CustomProgressSteps";
+import Progress from "../Components/Progress";
 
 const BasicPatientInfo = ({ navigation }) => {
   route = useRoute();
@@ -100,6 +101,7 @@ const BasicPatientInfo = ({ navigation }) => {
           source={require("../assets/Designer.png")}
           style={styles.backgroundImage2}
         >
+        <Progress completed1='outline' completed2='outline'/>
           <CustomProgressSteps activeStep={2}></CustomProgressSteps>
           <View>
             <Text style={styles.label}>Initial Diagnosis of Patient</Text>
