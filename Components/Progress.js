@@ -60,13 +60,11 @@ export default function Progress(props) {
    
   return (
     <Container>
-        {/* <View>{props.name}</View> */}
         <ProgressBar>
             
             <Step>
                 <StepText>Hospital Select</StepText>
                 <Bullet variant={props.completed1}>1</Bullet>
-                {/* <Bullet variant='outline'>1</Bullet> */}
             </Step>
             <Step>
                 <StepText>Patient Page 1</StepText>
