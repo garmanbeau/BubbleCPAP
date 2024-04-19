@@ -14,6 +14,11 @@ import styles from "../shared/styles";
 import { fetchHospitals } from "../shared/api";
 import { useValidation } from "../shared/validation";
 import CustomProgressSteps from "../shared/CustomProgressSteps";
+//import { Container } from "../Components/Progress.styles";
+//import Progress from "../Components/Progress";
+//import Progress from "../Components/Progress";
+// import Progress from '../Components/Progress';
+import Progress from "../Components/Progress";
 
 const HospitalSelect = ({ navigation }) => {
   const route = useRoute();
@@ -123,6 +128,8 @@ const HospitalSelect = ({ navigation }) => {
           source={require("../assets/Designer.png")}
           style={styles.backgroundImage2}
         >
+                  <Progress completed1='outline'/>
+
           <CustomProgressSteps activeStep={0}>
           </CustomProgressSteps>
           {isSubmitted && !hospitalDropdownValidation.isValid && (
